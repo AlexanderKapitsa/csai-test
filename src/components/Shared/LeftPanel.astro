@@ -1,0 +1,7 @@
+---
+const { className } = Astro.props;
+---
+
+<div class=`w-[58%] md:w-[60%] lap:w-[53%] lg:w-[55%] ${className ? className : ''}`>
+  <slot />
+</div>

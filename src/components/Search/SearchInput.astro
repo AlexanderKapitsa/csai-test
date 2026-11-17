@@ -1,0 +1,131 @@
+---
+import { init } from '@utils/i18n/get-locale';
+
+const { t } = init(Astro.url);
+---
+
+<div
+  class="flex flex-col gap-2 bg-background-light dark:bg-background-dark max-w-auto overall-query-input rounded-md"
+>
+  <div
+    id="query-wrapper"
+    class="flex items-center gap-2 h-[54px] dark:border-primary-dark border-secondary-400-dark border-[3px] rounded-md py-2 px-4"
+  >
+    <input
+      type="text"
+      id="query"
+      class="block w-full px-2 bg-transparent"
+      autocomplete="off"
+      style="outline:none"
+      placeholder={`${t('common.search')}...`}
+    />
+    <button
+      id="clear-query-btn"
+      class="flex items-center justify-center size-6 hidden"
+    >
+      <span
+        class="block size-6 pt-0.5 border border-secondary-400-dark dark:border-primary-dark rounded-full leading-none font-mono"
+        >x</span
+      >
+    </button>
+  </div>
+</div>
+
+<script>
+  const searchResultsContainer = document.getElementById(
+    'search-results-container'
+  );
+  const queryRef = document.getElementById('query');
+  const queryWrapperRef = document.getElementById('query-wrapper');
+  const clearQueryBtnRef = document.getElementById('clear-query-btn');
+  const loadMoreBtnRef = document.getElementById('load-more-btn');
+  const resultsSubtitle = document.getElementById('results-subtitle');
+  const notFoundMsgRef = document.getElementById('search-message');
+
+  const queryResultsRef = document.getElementById('query-results');
+
+  addClearButtonLogic();
+  addHideClearButtonOnInputClear();
+  addBroaderAreaToFocusOnInput();
+
+  function addClearButtonLogic() {
+    clearQueryBtnRef.addEventListener('click', () => {
+      queryRef.value = '';
+      queryRef.focus();
+      hideClearButton();
+      hideLoadMoreBtn();
+      hideResultsSubtitle();
+      hideNotFoundMessage();
+      hideSRContainerBg();
+      queryResultsRef.innerHTML = '';
+    });
+  }
+
+  function addBroaderAreaToFocusOnInput() {
+    queryWrapperRef.addEventListener('click', (event) => {
+      if (event.target === queryWrapperRef) {
+        queryRef.focus();
+      }
+    });
+  }
+
+  function addHideClearButtonOnInputClear() {
+    queryRef.addEventListener('input', (event) => {
+      const length = event.target.value.trim().length;
+
+      if (length === 0) {
+        hideClearButton();
+        return;
+      }
+
+      showClearButton();
+    });
+  }
+
+  function showClearButton() {
+    clearQueryBtnRef.classList.remove('hidden');
+  }
+
+  function hideClearButton() {
+    clearQueryBtnRef.classList.add('hidden');
+  }
+
+  function hideNotFoundMessage() {
+    notFoundMsgRef.classList.add('hidden');
+    document.getElementById('notFoundMsg').classList.add('hidden');
+  }
+
+  function hideResultsSubtitle() {
+    resultsSubtitle.classList.add('hidden');
+  }
+
+  function hideLoadMoreBtn() {
+    loadMoreBtnRef.classList.add('hidden');
+  }
+
+  function hideSRContainerBg() {
+    searchResultsContainer.classList.remove(
+      'bg-background-light',
+      'dark:bg-background-dark',
+      'border',
+      'border-primary-light',
+      'dark:border-primary-dark'
+    );
+  }
+
+  document.addEventListener('click', function (e) {
+    const wrapper = document.getElementById('search-panel-wrapper');
+    const panel = document.getElementById('search-slide-panel');
+    if (!wrapper.contains(e.target)) {
+      panel.classList.add('translate-x-full');
+      panel.classList.add('invisible');
+      queryRef.value = '';
+      hideClearButton();
+      hideLoadMoreBtn();
+      hideResultsSubtitle();
+      hideNotFoundMessage();
+      hideSRContainerBg();
+      queryResultsRef.innerHTML = '';
+    }
+  });
+</script>

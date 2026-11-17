@@ -1,0 +1,50 @@
+---
+import MainLayout from './MainLayout.astro';
+import CentralPanel from '@comp/Shared/CentralPanel.astro';
+import BasicPageHeader from '@comp/Shared/BasicPageHeader.astro';
+import BasicMobilePageHeader from '@comp/Shared/BasicMobilePageHeader.astro';
+import BasicParagraph from '@comp/Shared/BasicParagraph.astro';
+import Tree from '@comp/Tree';
+import { RepositoryNodeType } from 'src/enums/repository-node-type';
+import type { IRepositoryTreeNode } from 'src/interfaces/repository/repository-node-interface';
+
+const { frontmatter } = Astro.props;
+
+function mapNodeTypes(nodes) {
+  return nodes
+    .filter((node) => !node.hidden) 
+    .map((node) => ({
+      ...node,
+      nodeType: RepositoryNodeType[node.nodeType],
+      children: node.children
+        ? mapNodeTypes(node.children)
+        : undefined,
+    }));
+}
+
+
+const repositoryTree =
+  frontmatter.repositoryTree
+    ? mapNodeTypes(frontmatter.repositoryTree)
+    : [];
+
+---
+<MainLayout pageTitle={frontmatter.title}>
+  <CentralPanel>
+    <div class="w-full xl:max-w-[800px]">
+      <BasicPageHeader title={frontmatter.title} />
+      <BasicMobilePageHeader title={frontmatter.title} />
+
+      {frontmatter.introText && (
+        <BasicParagraph text={frontmatter.introText} />
+      )}
+    </div>
+
+    {repositoryTree && (
+      <Tree
+        client:only="preact"
+        data={repositoryTree}
+      />
+    )}
+  </CentralPanel>
+</MainLayout>

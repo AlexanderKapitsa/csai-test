@@ -1,0 +1,34 @@
+---
+import Portrait from './Portrait.astro';
+
+const { additionalClasses, pictureSrc, text } = Astro.props;
+---
+
+<article
+  class={`flex flex-col items-center gap-3 w-44 p-4 h-[260px] md:w-52 md:h-[308px] md:p-5 lap:w-64 lap:h-[379px] xl:w-[320px] xl:h-[434px] lap:p-6 rounded-md select-none cursor-pointer ${additionalClasses}`}>
+  
+  <Portrait
+    pictureSrc={pictureSrc}
+    throwErrorOnNoPicFound={false}
+
+    widthMobile={144}
+    heightMobile={144}
+
+    widthMd={200}
+    heightMd={210}
+
+    widthLap={220}
+    heightLap={230}
+
+    widthXl={260}
+    heightXl={275}
+
+    widthDesktop={272}
+    heightDesktop={290}
+  />
+
+  <h3 class="line-clamp-3 sm:text-base  lap:text-xl xl:text-xl lg:text-xl">
+    {text}
+  </h3>
+</article>
+

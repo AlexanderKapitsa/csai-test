@@ -1,0 +1,16 @@
+---
+import { Icon } from 'astro-icon/components';
+const { title, href } = Astro.props;
+---
+
+<a
+  href={href}
+  class="flex justify-between items-center dark:bg-primary-dark bg-secondary-700-dark text-background-light xl:px-8 xl:py-3 lap:rounded-2xl xl:rounded-2xl lg:rounded-3xl md:text-lg lap:text-xl xl:text-xl lg:text-2xl xl:mt-5 py-1.5 px-4 md:rounded-[30px] rounded-[20px] mt-2.5 text-xs"
+>
+  <span class="w-3/4 lap:w-11/12 line-clamp-2 lap:line-clamp-1 text-ellipsis">
+    {title}
+  </span>
+  <div class="rotate-180 text-background-light">
+    <Icon name="arrow-outline" class="size-[30px] lg:size-[54px]" />
+  </div>
+</a>

@@ -1,0 +1,60 @@
+---
+import { init } from '@utils/i18n/get-locale';
+import Subtitle from './Subtitle.astro';
+import DocumentLink from './Shared/DocumentLink.astro';
+import LinkIcon from '../components/LinkIcon';
+
+interface UsefulLinks {
+  title: string;
+  url: string;
+}
+
+const { t } = init(Astro.url);
+
+const {
+  usefulLinks,
+  title = t('departments.usefulLinks'),
+  showIcon = false,
+} = Astro.props as {
+  usefulLinks: UsefulLinks[];
+  title?: string;
+  showIcon?: boolean;
+};
+
+if (!usefulLinks || usefulLinks.length === 0) return;
+
+const linkClass = showIcon
+  ? "no-underline hover:text-blue-600"
+  : "hover:underline";
+---
+
+<section>
+  <div>
+    <!-- Mobile -->
+    <div class="lg:hidden">
+      <Subtitle text={title} />
+    </div>
+
+    <!-- Desktop -->
+    <div class="lg:flex lg:justify-between lg:items-center hidden">
+      <Subtitle text={title} />
+    </div>
+    <div class="flex flex-col gap-2 mb-4">
+      {
+        usefulLinks.map((urlObj) => (
+          <div class="flex items-center gap-2">
+            {showIcon && (
+              <LinkIcon class="w-[16px] h-[16px] text-blue-500 flex-shrink-0" />
+            )}
+            <DocumentLink
+              href={urlObj.url}
+              openNewPage
+              label={urlObj.title}
+              classList={linkClass}
+            />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

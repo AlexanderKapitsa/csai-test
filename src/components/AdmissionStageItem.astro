@@ -1,0 +1,17 @@
+---
+const { title, description, dueDate } = Astro.props;
+
+import { Markdown } from '@astropub/md';
+---
+
+<div class="flex gap-10 md:gap-28 lap:gap-32 xl:gap-40">
+  <div class="flex flex-col gap-2 items-center w-[110px] md:w-[150px] lap:w-[240px] xl:w-[270px] lg:w-[300px]">
+    <h3 class="text-xl md:text-2xl lap:text-[25px] xl:text-[27px] lg:text-3xl text-secondary-400-dark dark:text-primary-dark">{title}</h3>
+    <p class="text-sm md:text-base lap:text-lg xl:text-[18px] lg:text-xl text-center dark:text-background-light">{dueDate}</p>
+  </div>
+
+  <div
+    class="w-40 md:w-[200px] lap:w-[300px] xl:w-[400px] lg:w-[500px] text-xl lg:text-2xl lg:leading-9 [&_a]:underline [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-6 [&_ul]:lg:pl-8 [&_ol]:pl-6 [&_ol]:lg:pl-8">
+    <Markdown of={description} />
+  </div>
+</div>

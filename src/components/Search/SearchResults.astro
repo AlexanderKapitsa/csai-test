@@ -1,0 +1,260 @@
+---
+import { init } from '@utils/i18n/get-locale';
+import Button from '../Button.astro';
+const { t } = init(Astro.url);
+const loadingMsg = t('common.loading');
+const notFoundMsg = t('common.notFound');
+---
+
+<div
+  class="overall-search-results rounded-md p-2"
+  id="search-results-container"
+>
+  <h2 class="text-lg lg:text-xl hidden" id="results-subtitle">
+    {t('common.result')}
+  </h2>
+  <ul id="query-results" class="flex flex-col gap-6 whitespace-normal text-sm">
+  </ul>
+  <div class="flex justify-center mt-2 hidden" id="load-more-btn">
+    <Button title={t('common.loadMore')} size="sm" />
+  </div>
+  <p id="search-message" class="hidden text-xs lg:text-md">
+    <span class="hidden" id="loadingMsg">{loadingMsg}...</span>
+    <span class="hidden" id="notFoundMsg">{notFoundMsg}.</span>
+  </p>
+</div>
+
+<!-- Filler -->
+<div class="h-48"></div>
+
+<script>
+  import Paginate from '@utils/paginate.js';
+  import Counter from '@utils/counter.js';
+
+  let paginate;
+  const counter = Counter();
+
+  const searchResultsContainer = document.getElementById(
+    'search-results-container'
+  );
+  const queryRef = document.getElementById('query');
+  const resultsSubtitle = document.getElementById('results-subtitle');
+  const queryResultsRef = document.getElementById('query-results');
+  const loadMoreBtnRef = document.getElementById('load-more-btn');
+  const statusRef = document.getElementById('search-message');
+
+  let searchId = null;
+
+  const loadMoreClickListener = async () => {
+    if (paginate.isEnd()) {
+      hideLoadMoreBtn();
+    }
+
+    const data = paginate.next();
+    loadMoreBtnRef.classList.add('brightness-50');
+    await appendResults(data, searchId);
+
+    if (paginate.isEnd()) {
+      hideLoadMoreBtn();
+    }
+
+    loadMoreBtnRef.classList.remove('brightness-50');
+  };
+
+  queryRef.addEventListener('input', fetchResults);
+  loadMoreBtnRef.addEventListener('click', loadMoreClickListener);
+
+  async function fetchResults(event) {
+    const queryValue = event.target.value.trim();
+
+    if (queryValue.length === 0) {
+      hideLoadMoreBtn();
+      hideResultsSubtitle();
+      clearResultsView();
+      hideSRContainerBg();
+      hideMessage();
+      return;
+    }
+
+    const currentSearchId = counter.increment();
+
+    searchId = currentSearchId;
+
+    if (isNotCurrentSearchUpToDate(currentSearchId)) {
+      return;
+    }
+
+    hideLoadMoreBtn();
+    showResultsSubtitle();
+    showLoadingMessage();
+    showSRContainerBg();
+
+    const results = await getResultsBy(queryValue);
+
+    if (isNotCurrentSearchUpToDate(currentSearchId)) {
+      return;
+    }
+
+    if (results.results.length === 0) {
+      clearResultsView();
+      showNotFoundMessage();
+      return;
+    }
+
+    paginate = new Paginate(results.results);
+
+    clearResultsView();
+    await appendResults(paginate.next(), currentSearchId);
+
+    console.log('Loaded');
+
+    if (!isNotCurrentSearchUpToDate(searchId)) {
+      hideMessage();
+    }
+
+    if (!paginate.isEnd() && !isNotCurrentSearchUpToDate(searchId)) {
+      showLoadMoreBtn();
+    }
+
+    searchId = null;
+  }
+
+  async function getResultsBy(query) {
+    return await window.pagefind.search(query);
+  }
+
+  async function appendResults(newResults, currentSearchId) {
+    if (isNotCurrentSearchUpToDate(currentSearchId)) {
+      return;
+    }
+
+    const items = [];
+
+    console.log(newResults);
+
+    for (const result of newResults) {
+      const data = await result.data();
+
+      if (isNotCurrentSearchUpToDate(currentSearchId)) {
+        return;
+      }
+
+      const viewIsNotEmpty =
+        items.length > 0 || queryResultsRef.children.length > 0;
+
+      if (viewIsNotEmpty) {
+        const separatorItem = document.createElement('li');
+        separatorItem.classList.add('whitespace-normal');
+
+        const separatorDiv = document.createElement('div');
+        separatorDiv.classList.add(
+          'h-0.5',
+          'bg-secondary-400-dark',
+          'dark:bg-primary-dark'
+        );
+        separatorItem.appendChild(separatorDiv);
+
+        items.push(separatorItem);
+      }
+
+      const listItem = document.createElement('li');
+      listItem.classList.add('whitespace-normal');
+
+      const linkItem = document.createElement('a');
+      linkItem.classList.add('hover:underline');
+      linkItem.href = data.url;
+
+      const textContainer = document.createElement('div');
+      textContainer.classList.add('flex', 'flex-col');
+
+      const title = document.createElement('h3');
+      title.classList.add('text-md', 'lg:text-lg');
+      title.style = `
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;`;
+      title.textContent = data.meta.title;
+
+      const date = document.createElement('p');
+      date.classList.add('lg:text-md');
+      date.textContent = data.meta.date;
+
+      textContainer.appendChild(title);
+      textContainer.appendChild(date);
+
+      listItem.appendChild(linkItem);
+
+      linkItem.appendChild(textContainer);
+
+      listItem.append(linkItem);
+
+      items.push(listItem);
+    }
+
+    items.forEach((i) => queryResultsRef.append(i));
+  }
+
+  function clearResultsView() {
+    queryResultsRef.innerHTML = '';
+  }
+
+  function isNotCurrentSearchUpToDate(currentSearchId) {
+    return searchId !== currentSearchId && searchId && currentSearchId;
+  }
+
+  function showLoadMoreBtn() {
+    loadMoreBtnRef.classList.remove('hidden');
+  }
+
+  function hideLoadMoreBtn() {
+    loadMoreBtnRef.classList.add('hidden');
+  }
+
+  function hideMessage() {
+    statusRef.classList.add('hidden');
+  }
+
+  const loadingMsgRef = document.getElementById('loadingMsg');
+  const notFoundMsgRef = document.getElementById('notFoundMsg');
+
+  function showNotFoundMessage() {
+    statusRef.classList.remove('hidden');
+    loadingMsgRef.classList.add('hidden');
+    notFoundMsgRef.classList.remove('hidden');
+  }
+
+  function showLoadingMessage() {
+    statusRef.classList.remove('hidden');
+    notFoundMsgRef.classList.add('hidden');
+    loadingMsgRef.classList.remove('hidden');
+  }
+
+  function showResultsSubtitle() {
+    resultsSubtitle.classList.remove('hidden');
+  }
+
+  function hideResultsSubtitle() {
+    resultsSubtitle.classList.add('hidden');
+  }
+
+  function hideSRContainerBg() {
+    searchResultsContainer.classList.remove(
+      'bg-background-light',
+      'dark:bg-background-dark',
+      'border',
+      'border-primary-light',
+      'dark:border-primary-dark'
+    );
+  }
+
+  function showSRContainerBg() {
+    searchResultsContainer.classList.add(
+      'bg-background-light',
+      'dark:bg-background-dark',
+      'border',
+      'border-primary-light',
+      'dark:border-primary-dark'
+    );
+  }
+</script>

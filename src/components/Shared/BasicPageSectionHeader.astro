@@ -1,0 +1,16 @@
+---
+import { Code } from 'astro:components';
+
+const { label, id } = Astro.props;
+
+const h3Props = {
+  ...(id && { id }),
+};
+---
+
+<h3
+  {...h3Props}
+  class="xl:order-2 lg:text-2xl text-xl md:lap-2xl lap:text-3xl xl:text-4xl lg:text-5xl my-2 md:mt-2 lap:mt-4 xl:mt-6 lg:mt-8"
+>
+  {label}
+</h3>

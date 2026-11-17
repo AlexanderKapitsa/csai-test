@@ -1,0 +1,81 @@
+---
+import { Icon } from 'astro-icon/components';
+import AdmissionStageItem from './AdmissionStageItem.astro';
+
+const { steps, link, t } = Astro.props;
+---
+
+<div class="py-8 md:pt-10 md:pb-14 lap:pt-14 lap:pb-16 xl:pt-16 xl:pb-20">
+  <div class="relative flex items-center w-full h-fit py-6 xl:py-8">
+    <!-- A long line with circles -->
+    <div class="absolute left-[130px] h-full">
+      <!-- Mobile -->
+      <div class="lap:hidden">
+        <!-- Circles at the start and at the end -->
+        <Icon
+          name="circle"
+          class="absolute -top-1.5 -left-[5px] size-3 md:left-[203px] md:size-4 text-secondary-300-light dark:text-primary-dark"
+        />
+        <Icon
+          name="circle"
+          class="absolute -bottom-1.5 -left-[5px] size-3 md:left-[203px] md:size-4 text-secondary-300-light dark:text-primary-dark"
+        />
+
+        <!-- Vertical line -->
+        <div
+          class="absolute w-0.5 h-full md:left-[210px]  bg-secondary-300-light dark:bg-primary-dark"
+        >
+        </div>
+      </div>
+
+      <!-- Desktop -->
+      <div class="hidden lap:block">
+        <!-- Circles at the start and at the end -->
+        <Icon
+          name="circle"
+          class="absolute -top-1.5 lap:-left-[10px] xl:-left-[11px] lap:size-5 xl:size-6 text-secondary-400-dark dark:text-primary-dark"
+        />
+        <Icon
+          name="circle"
+          class="absolute -bottom-5 lap:left-[391px] xl:left-[449px] lap:size-5 xl:size-6 text-secondary-400-dark dark:text-primary-dark"
+        />
+
+        <!-- Vertical lines for desktop -->
+        <div
+          class="absolute w-0.5 h-16 bg-secondary-400-dark dark:bg-primary-dark"
+        >
+        </div>
+        <div
+          class="absolute top-16 lap:left-[400px] xl:left-[460px] w-0.5 h-[calc(100%-45px)] bg-secondary-400-dark dark:bg-primary-dark"
+        >
+        </div>
+
+        <!-- Additional horizontal line for desktop -->
+        <div
+          class="hidden lap:block absolute top-16 h-0.5 lap:w-[400px] xl:w-[460px] bg-secondary-400-dark dark:bg-primary-dark"
+        >
+        </div>
+      </div>
+    </div>
+
+    <ul class="flex flex-col gap-6 md:gap-8 lap:gap-14 xl:gap-16 w-full md:pl-[140px] lap:mt-24 lap:pl-[230px] xl:mt-20 xl:pl-[252px]  lg:pl-[200px]">
+      {
+        steps.map(({ deadline, description }, index) => (
+          <li class="relative">
+            <AdmissionStageItem
+              title={`${index + 1} ${t('admissions.stage')}`}
+              dueDate={deadline}
+              description={description}
+            />
+            <div class="absolute top-4 xl:top-[24px] left-[107px] md:left-[177px] lap:left-[277px] xl:left-[315px] lg:left-[367px] -translate-y-1/2 flex items-center justify-center size-12">
+              <Icon
+                name="circle"
+                class="size-3 md:size-4 lap:size-5 xl:size-6 text-secondary-300-light lap:text-secondary-400-dark dark:text-primary-dark"
+              />
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+---
+const { text, skipCropLongText } = Astro.props;
+---
+
+<div class="flex flex-col gap-2 lg:gap-4 mt-2 lg:mt-8 md:text-lg lap:text-xl xl:text-2xl text-xs lg:text-2xl">
+  <p class=`${skipCropLongText ? "" : "line-clamp-11"}`>{text}</p>
+</div>

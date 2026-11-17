@@ -1,0 +1,81 @@
+---
+import MainLayout from './MainLayout.astro';
+import AchievementsList from '@comp/AchievementsList.astro';
+import ResInstDepartment from '@comp/ResInstDepartment.astro';
+import Gallery from '@comp/Gallery.astro';
+import Cooperation from '@comp/Cooperation.astro';
+import BookletButton from '@comp/BookletButton.astro';
+import DepartmentsUrls from '@comp/DepartmentsUrls.astro';
+import DepartmentAboutInfo from '@comp/DepartmentAboutInfo.astro';
+import BulletList from '@comp/BulletList.astro';
+import DepartmentContactInfo from '@comp/DepartmentContactInfo.astro';
+import DepartmentGoals from '@comp/DepartmentGoals.astro';
+import DepartmentNotableAchievements from '@comp/DepartmentNotableAchievements.astro';
+import AlternatingBlocks from '@comp/AlternatingBlocks.astro';
+import { getLocale } from '@utils/i18n/get-locale.js';
+
+const { frontmatter } = Astro.props;
+const locale = getLocale(Astro.url);
+
+const teacherModules = import.meta.glob<{
+  frontmatter: {
+    name: string;
+    position: string;
+    photo?: string;
+    isPublished?: boolean;
+  };
+}>('/src/pages/teachers/*/*.mdx', { eager: true });
+
+const rawGallery = frontmatter?.gallery || [];
+
+const gallery = rawGallery
+  .filter((item: any) => item.isPublished !== false)
+  .map((item: any) => {
+    let teacherData: { name?: string; position?: string; photo?: string } = {};
+
+    if (typeof item.teacher === 'string' && item.teacher.trim() !== '') {
+      const teacherSlug = item.teacher.split('/').pop()?.replace(/\.mdx$/, '');
+
+      if (teacherSlug) {
+        const targetPath = `/teachers/${locale}/${teacherSlug}.mdx`;
+        const matchedEntry = Object.entries(teacherModules).find(([filePath]) =>
+          filePath.endsWith(targetPath)
+        );
+
+        if (matchedEntry) {
+          teacherData = matchedEntry[1].frontmatter;
+        }
+      }
+    }
+
+    return {
+      name: teacherData.name || item.name || '',
+      position: teacherData.position || item.position || '',
+      frontPicture: item.frontPicture || teacherData.photo || '',
+      ...item,
+    };
+  });
+---
+
+<MainLayout pageTitle={frontmatter.title}>
+  <div data-pagefind-body>
+    <ResInstDepartment frontmatter={frontmatter} />
+    <DepartmentAboutInfo longAbout={frontmatter.longAbout} />
+    <BulletList title="departments.keyAreas" items={frontmatter.keyAreas} />
+    <BookletButton url={frontmatter.presentationLink} />
+    <AchievementsList title={frontmatter.title} />
+    <Cooperation companies={frontmatter.cooperations} />
+    <DepartmentNotableAchievements
+      achievements={frontmatter.notableAchievements}
+    />
+    <BulletList
+      title="departments.educationalIniciatives"
+      items={frontmatter.educationalIniciatives}
+    />
+    <AlternatingBlocks items={frontmatter.infrastructure} />
+    <DepartmentGoals goals={frontmatter.goals} />
+    <Gallery people={gallery} />
+    <DepartmentsUrls usefulLinks={frontmatter.usefulLinks} />
+    <DepartmentContactInfo frontmatter={frontmatter} />
+  </div>
+</MainLayout>

@@ -1,0 +1,32 @@
+---
+import ResInstActionButton from './ResInstActionButton.astro';
+import ResInstTitle from './ResInstTitle.astro';
+import ResInstTree from './ResInstTree.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+---
+
+<section class="res-inst h-vh w-full mt-[-100px] relative">
+  <!-- Padding is for better UX text selection purpose only -->
+  <div class="absolute top-36 lg:top-48 left-0 min-w-full">
+    <ResInstTitle
+      titleParts={[
+        `${t('mainPage.resInstTitle1')}`,
+        `${t('mainPage.resInstTitle2')}`,
+        `${t('mainPage.resInstTitle3')}`,
+        `${t('mainPage.resInstTitle4')}`,
+      ]}
+    />
+  </div>
+
+  <div class="tree-container">
+    <div class="tree">
+      <ResInstTree />
+    </div>
+  </div>
+
+  <div id="action-button" class="action-button">
+    <ResInstActionButton title=`${t("common.readMore")}` />
+  </div>
+</section>

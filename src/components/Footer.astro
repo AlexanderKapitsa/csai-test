@@ -1,0 +1,520 @@
+---
+import { Icon } from 'astro-icon/components';
+import PostFooter from './EasterEggs/PostFooter.astro';
+import { init, getLocale } from '@utils/i18n/get-locale.js';
+import { getHeaderRoutesConfig } from '../data/header-routes';
+import { HeaderSections } from 'src/enums/header-sections-enum';
+
+const { t } = init(Astro.url);
+const locale = getLocale(Astro.url);
+const allFooters = await Astro.glob('../pages/footer/*/index.mdx');
+
+const footer = allFooters.filter((f) => f.file.includes(`/${locale}/`));
+const {
+  frontmatter: { emails, socialLinks },
+} = footer[0];
+const list = getHeaderRoutesConfig(locale, t);
+const departments =
+  list.find((section) => section.title === t('departments.departments'))
+    ?.sublist || [];
+const admissionSection =
+  list.find((section) => section.title === t('admissions.admissions'))
+    ?.sublist || [];
+
+// Сторінка НЕ доступна за замовчуванням. Показуємо лише якщо в .env явно вказано 'true'
+const showElectives = 
+  String(import.meta.env.PUBLIC_SHOW_ELECTIVE_COMPONENTS ?? '')
+    .trim()
+    .toLowerCase() === 'true';
+---
+
+<footer>
+  <div
+    class="container flex flex-col gap-8 md:gap-14 lap:gap-24 text-secondary-400-dark dark:text-primary-dark py-24 lap:pb-36 md:py-24 lap:py-36 px-6 md:px-12 lap:px-28 text-base md:text-lg lap:text-xl lg:text-2xl"
+  >
+  <div class="flex flex-col  gap-6 lap:flex-row  justify-between">
+      {
+        (emails || socialLinks) && (
+          <div class="flex flex-col gap-4 lap:gap-6">
+            {socialLinks && socialLinks.length > 0 && (
+              <ul class="flex flex-wrap gap-[4.5rem] mb-4">
+                {socialLinks.map(({ link, category }) => (
+                  <li key={category} class="flex items-center">
+                    <a
+                      href={link}
+                      class="flex items-center gap-2.5 select-none hover:underline"
+                      target="_blank"
+                    >
+                      <Icon
+                        name={`${category}-light`}
+                        class="w-10 h-10 md:w-12 md:h-12 dark:opacity-0 absolute"
+                      />
+                      <Icon
+                        name={`${category}-dark`}
+                        class="w-10 h-10 md:w-12 md:h-12 opacity-0 dark:opacity-100 absolute"
+                      />
+                      {/* <span>{category}</span> */}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {emails.map(({ link, name }) => (
+              <div class="flex flex-col gap-2 lg:gap-3">
+                <span class="text-background-dark dark:text-white text-base md:text-lg lap:text-xl lg:text-2xl ">
+                  {name}
+                </span>
+                <a
+                  href={`mailto:${link}`}
+                  class="text-secondary-400-dark dark:text-primary-dark hover:underline  md:text-lg lap:text-xl lg:text-2xl text-base"
+                >
+                  {link}
+                </a>
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      <nav class="lg:ml-3 relative box-content">
+        <ul class="flex flex-col gap-2 lg:gap-7">
+          <li>
+            <div
+              id="nni-link"
+              class="lg:hover:underline cursor-pointer flex flex-row items-center gap-1"
+            >
+              <p class="p-2 select-none hover:brightness-110">
+                {t('titles.nniKNandSHI')}
+              </p>
+              <span id="nni-toggle" class="rounded-full dark:bg-background-light">
+                <Icon
+                  name="arrow-right"
+                  class="text-secondary-400-dark size-4 lg:size-8 dark:text-background-dark lg:rotate-180 rotate-90 dark:border-primary-dark border rounded-full"
+                />
+              </span>
+            </div>
+
+            <span
+              id="NLine"
+              class="lg:absolute lg:h-px lg:w-[230px] lg:dark:bg-primary-dark lg:bg-primary-light lg:left-[-34px] hidden lg:hidden"
+            ></span>
+
+            <div id="nni-list" class="hidden lg:hidden">
+              <ul
+                class="relative text-base lg:absolute lg:left-[-335px] lg:top-[1px] lg:text-xl lg:w-[300px]  flex text-center justify-center gap-2 lg:gap-6 flex-col lg:border-[4px] lg:border-r lg:rounded-[40px] dark:border-primary-dark lg:border-primary-light dark:text-background-light text-primary-light border-y-2 border-secondary-400-dark py-2"
+              >
+                <span class="absolute -top-[1px] -left-1 size-2 -translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"></span>
+                <span class="absolute -top-[1px] -right-1 size-2 -translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"></span>
+                <span class="absolute -bottom-[1px] -left-1 size-2 translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"></span>
+                <span class="absolute -bottom-[1px] -right-1 size-2 translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"></span>
+
+                <li>
+                  <a
+                    href={`/${locale}/faculty`}
+                    class="select-none lg:hover:underline lg:p-3 text-sm lg:text-xl text-center"
+                  >
+                    {t('titles.aboutNNI')}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={`/faculty-council/${locale}/faculty-council`}
+                    class="select-none lg:hover:underline lg:p-3 text-sm lg:text-xl text-center"
+                  >
+                    {t('titles.facultyCouncil')}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={`/${locale}/ep-public-discussion`}
+                    class="select-none lg:hover:underline lg:p-3 text-sm lg:text-xl text-center"
+                  >
+                    {t('admissions.epPublicDiscussion')}
+                  </a>
+                </li>
+                  <a
+              href=`/${locale}/contacts`
+              class="p-2 select-none hover:underline"
+              >{t('contacts.contacts')}</a
+            >
+          </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div
+              id="department-link"
+              class="lg:hover:underline cursor-pointer flex flex-row items-center gap-1"
+            >
+              <p class="p-2 select-none hover:brightness-110">
+                {t('departments.departments')}
+              </p>
+              <span class="rounded-full dark:bg-background-light">
+                <Icon
+                  name="arrow-right"
+                  class="text-secondary-400-dark size-4 lg:size-8 dark:text-background-dark lg:rotate-180 rotate-90 dark:border-primary-dark border rounded-full"
+                />
+              </span>
+            </div>
+            <span
+              id="DLine"
+              class="lg:absolute lg:h-px lg:w-[230px] lg:dark:bg-primary-dark lg:bg-primary-light lg:left-[-34px] hidden lg:hidden"
+            ></span>
+            <div id="department-list" class="hidden lg:hidden">
+              <ul
+                class="relative text-base lg:absolute lg:left-[-423px] lg:top-[-10px] lg:text-xl lg:w-[390px] flex text-center justify-center gap-2 lg:gap-6 flex-col lg:border-[5px] lg:border-r lg:rounded-[40px] dark:border-primary-dark lg:border-primary-light dark:text-background-light text-primary-light border-y-2 border-secondary-400-dark py-2"
+              >
+                <span
+                  class="absolute -top-[1px] -left-1 size-2 -translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"
+                ></span>
+                <span
+                  class="absolute -top-[1px] -right-1 size-2 -translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"
+                ></span>
+                <span
+                  class="absolute -bottom-[1px] -left-1 size-2 translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"
+                ></span>
+                <span
+                  class="absolute -bottom-[1px] -right-1 size-2 translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"
+                ></span>
+                {
+                  departments.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        class="select-none lg:hover:underline lg:p-3 text-sm lg:text-xl text-center"
+                      >
+                        {item.title}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a href=`/news/${locale}/1` class="p-2 select-none hover:underline"
+              >{t('news.news')}</a
+            >
+          </li>
+          <li>
+            <div
+              id="student-link"
+              class="lg:hover:underline cursor-pointer flex flex-row items-center gap-1"
+            >
+              <p class="p-2 select-none hover:brightness-110">
+                {t('admissions.student')}
+              </p>
+              <span class="rounded-full dark:bg-background-light">
+                <Icon
+                  name="arrow-right"
+                  class="text-secondary-400-dark size-4 lg:size-8 dark:text-background-dark lg:rotate-180 rotate-90 dark:border-primary-dark border rounded-full"
+                />
+              </span>
+            </div>
+
+            <span
+              id="SLine"
+              class="lg:absolute lg:h-px lg:w-[230px] lg:dark:bg-primary-dark lg:bg-primary-light lg:left-[-34px] hidden lg:hidden"
+            ></span>
+
+            <div id="student-list" class="hidden lg:hidden">
+              <ul class="relative text-base lg:absolute lg:left-[-274px] lg:top-[225px] lg:text-xl lg:w-[240px] lg:h-auto flex text-center justify-center gap-3 lg:gap-4 flex-col lg:border-[3px] lg:border-r lg:rounded-[40px] dark:border-primary-dark border-y-2 border-secondary-400-dark dark:text-background-light text-primary-light border-primary-light lg:border-primary-light lg:py-5 py-3">
+                <span class="absolute -top-[1px] -left-1 size-2 -translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"></span>
+                <span class="absolute -top-[1px] -right-1 size-2 -translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"></span>
+                <span class="absolute -bottom-[1px] -left-1 size-2 translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"></span>
+                <span class="absolute -bottom-[1px] -right-1 size-2 translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"></span>
+
+                <li>
+                  <a
+                    class="hover:underline lg:text-lg leading-5 select-none"
+                    href={`/repository/${locale}/admission-repository`}
+                  >
+                    {t('admissionRepository.educationalPrograms')}
+                  </a>
+                </li>
+                {showElectives && (
+                  <a 
+                    href={`/elective-components/${locale}`} 
+                    class="hover:underline lg:text-lg leading-5 select-none"
+                  >
+                    {t('titles.electiveComponents')}
+                  </a>
+                )}
+              </ul>
+            </div>
+          </li>
+
+          <li>
+            <div
+              id="admission-link"
+              class="lg:hover:underline cursor-pointer flex flex-row items-center gap-1"
+            >
+              <p class="p-2 select-none hover:brightness-110">
+                {t('admissions.admissions')}
+              </p>
+              <span class="rounded-full dark:bg-background-light">
+                <Icon
+                  name="arrow-right"
+                  class="text-secondary-400-dark size-4 lg:size-8 dark:text-background-dark lg:rotate-180 rotate-90 dark:border-primary-dark border rounded-full"
+                />
+              </span>
+            </div>
+            <span
+              id="ALine"
+              class="lg:absolute lg:h-px lg:w-[230px] lg:dark:bg-primary-dark lg:bg-primary-light lg:left-[-34px] hidden lg:hidden"
+            ></span>
+            <div id="admission-list" class="hidden lg:hidden">
+              <ul
+                class="relative text-base lg:absolute lg:left-[-274px] lg:top-[150px] lg:text-xl lg:w-[240px] lg:h-[220px] flex text-center justify-center gap-2 lg:gap-6 flex-col lg:border-[4px] lg:border-r lg:rounded-[40px] dark:border-primary-dark py-3 border-y-2 border-secondary-400-dark dark:text-background-light text-primary-light border-primary-light lg:border-primary-light"
+              >
+                <span
+                  class="absolute -top-[1px] -left-1 size-2 -translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"
+                ></span>
+                <span
+                  class="absolute -top-[1px] -right-1 size-2 -translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"
+                ></span>
+                <span
+                  class="absolute -bottom-[1px] -left-1 size-2 translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"
+                ></span>
+                <span
+                  class="absolute -bottom-[1px] -right-1 size-2 translate-y-1/2 rounded-full bg-secondary-300-dark dark:bg-primary-dark lg:hidden"
+                ></span>
+                {
+                  admissionSection.map((sublink) => (
+                    <li>
+                      <a
+                        class="hover:underline lg:text-lg leading-5 select-none"
+                        href={sublink.href}
+                      >
+                        {sublink.title}
+                      </a>
+                    </li>
+                  ))
+                }
+
+              </ul>
+            </div>
+          </li>
+          <li>
+          
+        </ul>
+      </nav>
+    </div>
+    <PostFooter />
+  </div>
+</footer>
+
+<script>
+  const DepartmentList = document.getElementById('department-list');
+  const DepartmentLink = document.getElementById('department-link');
+  const DepartmentLine = document.getElementById('DLine');
+
+  const AdmissionList = document.getElementById('admission-list');
+  const AdmissionLink = document.getElementById('admission-link');
+  const AdmissionLine = document.getElementById('ALine');
+
+  const NNIList = document.getElementById('nni-list');
+  const NNILink = document.getElementById('nni-link');
+  const NNILine = document.getElementById('NLine');
+
+  const StudentList = document.getElementById('student-list');
+  const StudentLink = document.getElementById('student-link');
+  const StudentLine = document.getElementById('SLine');
+
+  function viewDList() {
+    if (DepartmentList && AdmissionList && DepartmentLine && AdmissionLine && NNIList && NNILine && StudentList && StudentLine) {
+      if (!StudentList.classList.contains('lg:hidden')) {
+      StudentList.classList.add('lg:hidden');
+      StudentList.classList.remove('lg:block');
+      StudentLine.classList.add('lg:hidden');
+      StudentLine.classList.remove('lg:block');
+    }
+      if (!NNIList.classList.contains('lg:hidden')) {
+      NNIList.classList.add('lg:hidden');
+      NNIList.classList.remove('lg:block');
+      NNILine.classList.add('lg:hidden');
+      NNILine.classList.remove('lg:block');
+      }
+      if (
+        !AdmissionList.classList.contains('lg:hidden') &&
+        DepartmentList.classList.contains('lg:hidden')
+      ) {
+        DepartmentList.classList.toggle('lg:block');
+        DepartmentList.classList.toggle('lg:hidden');
+        DepartmentLine.classList.toggle('lg:block');
+        DepartmentLine.classList.toggle('lg:hidden');
+
+        AdmissionLine.classList.toggle('lg:hidden');
+        AdmissionLine.classList.toggle('lg:block');
+        AdmissionList.classList.toggle('lg:hidden');
+        AdmissionList.classList.toggle('lg:block');
+      } else {
+        DepartmentList.classList.toggle('lg:block');
+        DepartmentList.classList.toggle('lg:hidden');
+        DepartmentLine.classList.toggle('lg:block');
+        DepartmentLine.classList.toggle('lg:hidden');
+      }
+    } else {
+      console.error('DepartmentList element not found.');
+    }
+  }
+
+  function viewAList() {
+    if (DepartmentList && AdmissionList && DepartmentLine && AdmissionLine && NNIList && NNILine && StudentList && StudentLine) {
+      if (!StudentList.classList.contains('lg:hidden')) {
+      StudentList.classList.add('lg:hidden');
+      StudentList.classList.remove('lg:block');
+      StudentLine.classList.add('lg:hidden');
+      StudentLine.classList.remove('lg:block');
+    }
+      if (!NNIList.classList.contains('lg:hidden')) {
+      NNIList.classList.add('lg:hidden');
+      NNIList.classList.remove('lg:block');
+      NNILine.classList.add('lg:hidden');
+      NNILine.classList.remove('lg:block');
+      }
+      if (
+        AdmissionList.classList.contains('lg:hidden') &&
+        !DepartmentList.classList.contains('lg:hidden')
+      ) {
+        DepartmentList.classList.toggle('lg:block');
+        DepartmentList.classList.toggle('lg:hidden');
+        DepartmentLine.classList.toggle('lg:block');
+        DepartmentLine.classList.toggle('lg:hidden');
+
+        AdmissionLine.classList.toggle('lg:hidden');
+        AdmissionLine.classList.toggle('lg:block');
+        AdmissionList.classList.toggle('lg:hidden');
+        AdmissionList.classList.toggle('lg:block');
+      } else {
+        AdmissionLine.classList.toggle('lg:hidden');
+        AdmissionLine.classList.toggle('lg:block');
+        AdmissionList.classList.toggle('lg:hidden');
+        AdmissionList.classList.toggle('lg:block');
+      }
+    } else {
+      console.error('AdmissionList element not found.');
+    }
+  }
+
+  function viewNNIList() {
+    if (DepartmentList && AdmissionList && DepartmentLine && AdmissionLine && NNIList && NNILine && StudentList && StudentLine) {
+      if (!StudentList.classList.contains('lg:hidden')) {
+      StudentList.classList.add('lg:hidden');
+      StudentList.classList.remove('lg:block');
+      StudentLine.classList.add('lg:hidden');
+      StudentLine.classList.remove('lg:block');
+    }
+      if (
+        !DepartmentList.classList.contains('lg:hidden') &&
+        NNIList.classList.contains('lg:hidden')
+      ) {
+        NNIList.classList.toggle('lg:block');
+        NNIList.classList.toggle('lg:hidden');
+        NNILine.classList.toggle('lg:block');
+        NNILine.classList.toggle('lg:hidden');
+
+        DepartmentLine.classList.toggle('lg:hidden');
+        DepartmentLine.classList.toggle('lg:block');
+        DepartmentList.classList.toggle('lg:hidden');
+        DepartmentList.classList.toggle('lg:block');
+      } else if (
+        !AdmissionList.classList.contains('lg:hidden') &&
+        NNIList.classList.contains('lg:hidden')
+      ) {
+        NNIList.classList.toggle('lg:block');
+        NNIList.classList.toggle('lg:hidden');
+        NNILine.classList.toggle('lg:block');
+        NNILine.classList.toggle('lg:hidden');
+
+        AdmissionLine.classList.toggle('lg:hidden');
+        AdmissionLine.classList.toggle('lg:block');
+        AdmissionList.classList.toggle('lg:hidden');
+        AdmissionList.classList.toggle('lg:block');
+      } else {
+        NNIList.classList.toggle('lg:block');
+        NNIList.classList.toggle('lg:hidden');
+        NNILine.classList.toggle('lg:block');
+        NNILine.classList.toggle('lg:hidden');
+      }
+    } else {
+      console.error('NNIList element not found.');
+    }
+  }
+
+ function viewStudentList() {
+  if (DepartmentList && AdmissionList && NNIList && StudentList && DepartmentLine && AdmissionLine && NNILine && StudentLine) {
+    if (
+      !DepartmentList.classList.contains('lg:hidden') &&
+      StudentList.classList.contains('lg:hidden')
+    ) {
+      StudentList.classList.toggle('lg:block');
+      StudentList.classList.toggle('lg:hidden');
+      StudentLine.classList.toggle('lg:block');
+      StudentLine.classList.toggle('lg:hidden');
+
+      DepartmentLine.classList.toggle('lg:hidden');
+      DepartmentLine.classList.toggle('lg:block');
+      DepartmentList.classList.toggle('lg:hidden');
+      DepartmentList.classList.toggle('lg:block');
+    } else if (
+      !AdmissionList.classList.contains('lg:hidden') &&
+      StudentList.classList.contains('lg:hidden')
+    ) {
+      StudentList.classList.toggle('lg:block');
+      StudentList.classList.toggle('lg:hidden');
+      StudentLine.classList.toggle('lg:block');
+      StudentLine.classList.toggle('lg:hidden');
+
+      AdmissionLine.classList.toggle('lg:hidden');
+      AdmissionLine.classList.toggle('lg:block');
+      AdmissionList.classList.toggle('lg:hidden');
+      AdmissionList.classList.toggle('lg:block');
+    } else if (
+      !NNIList.classList.contains('lg:hidden') &&
+      StudentList.classList.contains('lg:hidden')
+    ) {
+      StudentList.classList.toggle('lg:block');
+      StudentList.classList.toggle('lg:hidden');
+      StudentLine.classList.toggle('lg:block');
+      StudentLine.classList.toggle('lg:hidden');
+
+      NNILine.classList.toggle('lg:hidden');
+      NNILine.classList.toggle('lg:block');
+      NNIList.classList.toggle('lg:hidden');
+      NNIList.classList.toggle('lg:block');
+    } else {
+      StudentList.classList.toggle('lg:block');
+      StudentList.classList.toggle('lg:hidden');
+      StudentLine.classList.toggle('lg:block');
+      StudentLine.classList.toggle('lg:hidden');
+    }
+  } else {
+    console.error('StudentList element not found.');
+  }
+}
+
+
+  function toggleVisibility(link, list) {
+    link.addEventListener('click', () => {
+      if (list) {
+        list.classList.toggle('hidden');
+      }
+    });
+  }
+
+if (DepartmentLink && AdmissionLink && NNILink && StudentLink) {
+  DepartmentLink.addEventListener('click', viewDList);
+  AdmissionLink.addEventListener('click', viewAList);
+  NNILink.addEventListener('click', viewNNIList);
+  StudentLink.addEventListener('click', viewStudentList); 
+
+  toggleVisibility(DepartmentLink, DepartmentList);
+  toggleVisibility(AdmissionLink, AdmissionList);
+  toggleVisibility(NNILink, NNIList);
+  toggleVisibility(StudentLink, StudentList); 
+} else {
+  console.error('One or more footer links not found.');
+}
+
+</script>

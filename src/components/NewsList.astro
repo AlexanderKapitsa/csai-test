@@ -1,0 +1,22 @@
+---
+import NewsItem from './NewsItem.astro';
+
+const { items, t } = Astro.props;
+---
+
+<ul class="flex flex-col gap-5 md:gap-8 lap:gap-10 max-w-[1170px] xl:gap-12">
+  {
+    items.map((data) => (
+      <li id="newsBlock" class="rounded-md">
+        <NewsItem data={data} t={t} />
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  #newsBlock:nth-child(n) {
+    border-width: 3px;
+    @apply dark:border-primary-dark border-secondary-400-dark;
+  }
+</style>

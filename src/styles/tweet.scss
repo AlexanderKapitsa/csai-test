@@ -1,0 +1,12 @@
+astro-embed-tweet {
+  @apply whitespace-normal;
+}
+
+.twitter-tweet {
+  @apply m-0 mx-auto border-2 rounded-md border-secondary-400-dark dark:border-primary-dark #{!important};
+  @apply w-[280px] lg:w-[720px] not-italic text-[#374151] dark:text-[#d1d5db];
+}
+
+.twitter-tweet a {
+  @apply text-black dark:text-white;
+}

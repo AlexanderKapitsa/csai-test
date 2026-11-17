@@ -1,0 +1,83 @@
+---
+import { Picture } from 'astro:assets';
+import Subtitle from './Subtitle.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+const { companies } = Astro.props;
+
+const images = import.meta.glob<{
+  default: ImageMetadata;
+}>(
+  '../assets/*.{jpeg,jpg,png,webp,avif,gif,svg,JPEG,JPG,PNG,WEBP,AVIF,GIF,SVG}'
+);
+---
+{(companies?.length > 0) && (
+<div class="mt-14 lap:mt-[64px] xl:mt-[72px] lg:mt-20">
+  <Subtitle text=`${t("common.internationalCooperation")}` />
+  <div class="mt-9 relative flex flex-col gap-7 md:mt-14 lap:mt-[72px] xl:mt-20 lg:mt-24">
+    <span
+      class="cooperation-dot absolute left-1/2 -translate-x-1/2 size-2 rounded-full bg-primary-dark md:-top-2 lap:-top-3 xl:-top-4 lg:-top-9 md:size-3"
+    ></span>
+    <span
+      id="cooperation-line"
+      class="absolute left-1/2 -translate-x-1/2 w-[1.2px] h-full rounded-full bg-primary-dark md:-top-2 lap:-top-3 xl:-top-4 lg:-top-9 md:w-[2px] lg:w-[3px]"
+    ></span>
+    {
+      companies?.map((company) => {
+        const logo = company.logo.replaceAll('../../', '../');
+
+        return (
+          <div
+            id="cooperation-company"
+            class="flex justify-between items-center gap-8 relative md:items-stretch"
+          >
+            <span class="cooperation-dot absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 size-2 rounded-full bg-primary-dark md:size-3" />
+            <div class="basis-1/2 flex justify-center">
+              <div
+                class="flex justify-center w-[70px] md:w-[160px] lap:w-[260px] xl:w-[320px] lg:basis-[300px]">
+                <Picture
+                  src={images[logo]()}
+                  alt="Лого компанії"
+                  width={300*1.5}
+                  class="select-none"
+                  format="webp"
+                  quality="high"
+                />
+              </div>
+            </div>
+            <div class="basis-1/2 md:basis-[300px] lap:basis-[360px] xl:basis-[390px] lg:basis-[450px]">
+              <p class="text-xs md:text-lg lap:text-xl xl:text-xl lg:text-2xl">{company.description}</p>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</div>
+)}
+
+<script>
+  const setStyles = () => {
+    const line = document.getElementById('cooperation-line');
+    const dots = document.querySelectorAll('.cooperation-dot');
+
+    if (!line || !dots || dots.length < 2) return;
+
+    const firstDotRect = dots[0].getBoundingClientRect();
+    const lastDotRect = dots[dots.length - 1].getBoundingClientRect();
+
+    const containerRect = line.parentElement.getBoundingClientRect();
+
+    const startY = firstDotRect.top - containerRect.top + firstDotRect.height / 2;
+    const endY = lastDotRect.top - containerRect.top + lastDotRect.height / 2;
+    const height = endY - startY;
+
+    line.style.top = `${startY}px`;
+    line.style.height = `${height}px`;
+  };
+
+
+  window.addEventListener("DOMContentLoaded", setStyles);
+  window.addEventListener('resize', setStyles);
+</script>

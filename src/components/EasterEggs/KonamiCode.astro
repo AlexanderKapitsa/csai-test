@@ -1,0 +1,114 @@
+---
+
+---
+
+<script>
+  import isEqual from 'lodash.isequal';
+  import { notifyPointsGained } from '@utils/points-notifier';
+  import { EasterEggOperator, EggsKeys } from '@utils/easter-egg-operator';
+
+  const heartBase64 =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAANCAYAAAB2HjRBAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAY0lEQVQokZWRQQ4AIQgDW///Z/awMVgE1F7UlKkECJdBxZM3C6wg2XlqzhvpJHIRwPDGFMx6jRryIouyE/wIAs3ALiD57ipg2QJir20A5djhMiCCFbwFZOBJZv+qX2apAZ35AcnfHQzDTZcFAAAAAElFTkSuQmCC';
+
+  const KONAMI_CODE = [
+    'arrowup',
+    'arrowup',
+    'arrowdown',
+    'arrowdown',
+    'arrowleft',
+    'arrowright',
+    'arrowleft',
+    'arrowright',
+    'keyb',
+    'keya',
+  ];
+
+  const createCombinationRevealer = (combination, onMatchFn) => ({
+    items: [],
+    appendItem: function (key) {
+      this.items.push(key);
+
+      if (this.items.length > combination.length) {
+        this.items.shift();
+      }
+
+      if (isEqual(combination, this.items)) {
+        onMatchFn(combination);
+      }
+    },
+  });
+
+  const heartBeeper = () => {
+    const heartRowEl = document.createElement('div');
+
+    const properties = Object.fromEntries([
+      ['position', 'fixed'],
+      ['top', '4px'],
+      ['left', '4px'],
+      ['display', 'flex'],
+      ['gap', '4px'],
+      ['align-items', 'flex-start'],
+      ['z-index', '11'],
+    ]);
+
+    // Apply styling for a div
+    for (const [key, value] of Object.entries(properties)) {
+      heartRowEl.style.setProperty(key, value);
+    }
+
+    // Heart image
+    const heartEl = new Image();
+    heartEl.src = heartBase64;
+    heartEl.width = '24';
+    heartEl.height = '24';
+
+    const audio = new Audio(
+      'data:audio/mpeg;base64,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'
+    );
+
+    audio.volume = 0.33;
+
+    // Add initial three hearts at once
+    for (let i = 0; i < 3; i++) {
+      heartRowEl.appendChild(heartEl.cloneNode(true));
+    }
+
+    audio.play();
+
+    setTimeout(() => {
+      // Add hearts each 200 ms
+      const interval = setInterval(() => {
+        heartRowEl.appendChild(heartEl.cloneNode(true));
+        audio.play();
+      }, 200);
+
+      // Stop after 1400 ms
+      setTimeout(() => {
+        clearInterval(interval);
+      }, 1400);
+
+      // Initial wait
+    }, 1250);
+
+    document.body.appendChild(heartRowEl);
+    EasterEggOperator.completeByKey(EggsKeys.KONAMI_CODE);
+
+    const easterEggListOperator = EasterEggOperator.listOperator;
+    const pointsGained = easterEggListOperator.getByKey(
+      EggsKeys.KONAMI_CODE
+    ).points;
+    notifyPointsGained(pointsGained);
+  };
+
+  // Instance of a class that checks if a user pressed KONAMI_CODE,
+  // then executes the heartBeeper function if so
+  const keysHolder = createCombinationRevealer(KONAMI_CODE, heartBeeper);
+
+  document.addEventListener('keydown', (event) => {
+    const { code } = event;
+
+    const normalizedKey = code.toLowerCase();
+
+    keysHolder.appendItem(normalizedKey);
+  });
+</script>

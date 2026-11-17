@@ -1,0 +1,17 @@
+---
+import PreFooterFirst from './PreFooterFirst.astro';
+import PreFooterSecond from './PreFooterSecond.astro';
+
+const isEven = Date.now() % 2 === 0;
+---
+
+<div
+  class="relative h-[256px] md:h-[600px] lap:h-[786px] xl:h-[976px] lg:h-[1146px] text-secondary-400-dark dark:text-primary-dark"
+>
+  <div
+    id="pre-footer"
+    class="absolute top-0 left-0 w-[312px] md:w-[700px] lap:w-[940px] xl:w-[1130px] lg:w-[1300px] opacity-100 transition-opacity duration-100 delay-100"
+  >
+    {isEven ? <PreFooterFirst /> : <PreFooterSecond />}
+  </div>
+</div>

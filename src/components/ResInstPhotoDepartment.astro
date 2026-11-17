@@ -1,0 +1,45 @@
+---
+import { Picture } from 'astro:assets';
+
+const { picture } = Astro.props;
+
+const actualSrc = picture.replaceAll('../../', '../');
+
+const images = import.meta.glob<{
+  default: ImageMetadata
+}>('../assets/*.{jpeg,jpg,png,webp,avif,gif,svg,JPEG,JPG,PNG,WEBP,AVIF,GIF,SVG}');
+if (!images[actualSrc]) throw new Error(`"${actualSrc}" does not exist in glob: "src/assets/*.{jpeg,jpg,png,webp,avif,gif,svg,JPEG,JPG,PNG,WEBP,AVIF,GIF,SVG}"`);
+---
+
+<div class="md:w-5/12">
+  <Picture
+    src={images[actualSrc]()}
+    alt=""
+    formats={['avif', 'webp']}
+    quality="high"
+    width={350 * 1.5}
+    height={450 * 1.5}
+    densities={[1, 1.5, 2, 3]}
+    class="object-center object-cover z-[3] absolute md:w-[130px] md:h-[170px] md:top-[110px] md:left-[550px] md:rounded-[16px] lap:w-[200px] lap:h-[260px] lap:top-[140px] lap:left-[720px] lap:rounded-[24px] xl:w-[290px] xl:h-[360px] xl:top-[180px] xl:left-[840px] xl:rounded-[32px] lg:left-[930px] lg:top-[190px] lg:w-[350px] lg:h-[450px] lg:rounded-[40px] w-[90px] h-[115px] top-[120px] left-[240px] rounded-[10px]"
+  />
+  <!-- blueTop -->
+  <div
+    class="absolute xl:bg-secondary-400-dark bg-secondary-300-dark dark:bg-transparent	xl:dark:border-8 dark:border-4 dark:border-primary-dark rounded-full z-1 md:w-[70px] md:h-[70px] md:left-[620px] md:top-[80px] lap:w-[130px] lap:h-[130px] lap:left-[840px] lap:top-[100px] xl:w-[180px] xl:h-[180px] xl:left-[1020px] xl:top-[110px] lg:w-[220px] lg:h-[220px] lg:left-[1135px] lg:top-[120px] left-[286px] top-[93px] w-[50px] h-[50px]"
+  >
+  </div>
+  <!-- blueBottom -->
+  <div
+    class="absolute xl:bg-secondary-700-light dark:bg-transparent xl:dark:border-8 dark:border-4 dark:border-primary-dark bg-secondary-300-dark rounded-full z-1 md:w-[70px] md:h-[70px] md:left-[530px] md:top-[250px] lap:w-[130px] lap:h-[130px] lap:left-[660px] lap:top-[310px] xl:w-[180px] xl:h-[180px] xl:left-[760px] xl:top-[400px] lg:w-[220px] lg:h-[220px] lg:top-[460px] lg:left-[830px] left-[225px] top-[200px] w-[50px] h-[50px]"
+  >
+  </div>
+  <!-- sky-blueTop -->
+  <div
+    class="absolute xl:bg-secondary-700-light dark:bg-primary-dark bg-secondary-400-dark rounded-full z-[2] md:w-[50px] md:h-[50px] md:left-[650px] md:top-[100px] lap:w-[100px] lap:h-[100px] lap:left-[880px] lap:top-[190px] xl:w-[140px] xl:h-[140px] xl:left-[1060px] xl:top-[230px] lg:w-[170px] lg:h-[170px] lg:left-[1190px] lg:top-[260px] left-[310px] top-[114px] w-[38px] h-[38px]"
+  >
+  </div>
+  <!-- sky-blueBottom -->
+  <div
+    class="absolute bg-secondary-400-dark dark:bg-primary-dark rounded-full z-[2] md:w-[50px] md:h-[50px] md:left-[520px] md:top-[220px] lap:w-[100px] lap:h-[100px] lap:left-[730px] lap:top-[350px] xl:w-[140px] xl:h-[140px] xl:left-[860px] xl:top-[460px] lg:w-[170px] lg:h-[170px] lg:left-[950px] lg:top-[540px] left-[217px] top-[185px] w-[38px] h-[38px]"
+  >
+  </div>
+</div>

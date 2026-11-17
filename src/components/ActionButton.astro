@@ -1,0 +1,9 @@
+---
+import Button from './Button.astro';
+
+const { href, title, openNewPage } = Astro.props;
+---
+
+<a href={href} class="" target={openNewPage ? '_blank' : ''}>
+  <Button title={title} size="md" />
+</a>

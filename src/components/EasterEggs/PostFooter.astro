@@ -1,0 +1,48 @@
+---
+import KonamiCode from './KonamiCode.astro';
+import UserProfileWrapper from './UserProfileWrapper.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+---
+
+<div class="z-10 text-primary-light dark:text-primary-dark">
+  <div
+    class="flex flex-col items-start text-left gap-1 text-xs md:items-center md:text-center md:text-base md:gap-2 lap:flex-row  lap:text-lg xl:text-xl text-primary-light dark:text-background-light opacity-25"
+  >
+    <p id="completed-counter">Виконано 0/5 досягнень.</p>
+    <a id="user-profile-link" class="underline cursor-pointer"
+      >{t('postFooter.viewAllAchievements')}</a
+    >
+  </div>
+
+  <script>
+    import UserProfileOperator from '@utils/modal-operators/user-modal-operator.js';
+
+    const link = document.getElementById('user-profile-link');
+    link.addEventListener('click', () => UserProfileOperator.show());
+  </script>
+
+  <!-- Hidden feature -->
+  <KonamiCode />
+
+  <!-- It is hidden by default -->
+  <UserProfileWrapper />
+
+  <!-- Show progress tracking -->
+  <script>
+    import { EasterEggOperator } from '@utils/easter-egg-operator';
+
+    const completedCounterRef = document.getElementById('completed-counter');
+
+    const updateCounter = () => {
+      const completedCount = EasterEggOperator.completedCount;
+      const totalCount = EasterEggOperator.listOperator.list.length;
+
+      completedCounterRef.innerHTML = `Виконано ${completedCount}/${totalCount} досягнень.`;
+    };
+
+    updateCounter();
+    setInterval(updateCounter, 1000);
+  </script>
+</div>

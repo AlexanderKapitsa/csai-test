@@ -1,0 +1,56 @@
+---
+import Subtitle from './Subtitle.astro';
+import Portrait from './Portrait.astro';
+import Copyright from './Copyright.astro';
+import { init, getLocale } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+const locale = getLocale(Astro.url);
+
+const files = await Astro.glob('../pages/speech/*/index.mdx');
+const file = files.find((f) => f.file.includes(`/${locale}/`));
+const {
+  frontmatter: { body, picture, deanName },
+} = file;
+---
+
+<div>
+  <Subtitle text=`${t("mainPage.directorsMessage")}` /> 
+  <div class="flex flex-col gap-4 lg:gap-6">
+    <div class="flex lg:justify-between gap-1.5 md:gap-6 lap:gap-10 xl:gap-12 lg:gap-16">
+      <div>
+        <p
+          class="whitespace-nowrap -mt-7 xl:-mt-12 mb-4 xl:mb-8 md:text-xl lap:text-2xl xl:text-3xl lg:text-4xl">
+          {t('common.applicantsGreeting')}
+        </p>
+
+        <p
+          class="text-xs w-max lg:text-2xl max-w-48 md:max-w-[400px] md:text-base lap:max-w-[500px] lap:text-lg xl:max-w-[600px] xl:text-xl lg:max-w-[745px]" >
+          {body}
+        </p>
+      </div>
+
+      <div class="sm:mt-6 md:mt-10 lg:mt-[82px] lg:mr-44">
+        <Portrait
+          pictureSrc={picture}
+
+          widthMobile={125}
+          heightMobile={154}
+
+          widthMd={220}
+          heightMd={270}
+
+          widthLap={300}
+          heightLap={390}
+
+          widthXl={340}
+          heightXl={460}
+
+          widthDesktop={387}
+          heightDesktop={512}
+        />
+      </div>
+    </div>
+    <Copyright text={deanName} />
+  </div>
+</div>

@@ -1,0 +1,32 @@
+---
+import TelegramGuts from './TelegramGuts.astro';
+const { id, description } = Astro.props;
+
+const PRE_CAPTION = 'Пост у Telegram';
+
+const finalCaption = `${PRE_CAPTION}: ${description}`;
+---
+
+<figure data-telegram-embed class="mx-auto">
+  <div
+    class="max-lg:relative max-lg:-left-[32px] mx-auto max-lg:scale-75 origin-top max-lg:w-[374px]">
+    <TelegramGuts id={id} />
+  </div>
+  <figcaption class="mx-auto w-[280px] lg:w-[720px] text-center">
+    {finalCaption}
+  </figcaption>
+
+  <script is:inline>
+    (() => {
+      const mainSel = '[data-telegram-embed] iframe';
+      const fallbackSel = null;
+      const wrapperSel = '[data-telegram-embed]';
+
+      const adjusters = {
+        containerSelectorFn: (el) => el.parentElement,
+      };
+
+      IframeInitializerPool.getInitializer(mainSel, fallbackSel, wrapperSel).initialize(adjusters);
+    })();
+  </script>
+</figure>

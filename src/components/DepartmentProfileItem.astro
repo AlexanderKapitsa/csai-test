@@ -1,0 +1,38 @@
+---
+import Portrait from './Portrait.astro';
+
+const { pictureSrc, title, name, description } = Astro.props;
+---
+
+<article class="flex gap-2 items-start md:gap-4 lap:gap-6 lg:gap-8">
+  <div
+    class="bg-secondary-400-dark dark:bg-primary-dark border-2 lg:border-4 border-secondary-400-dark dark:border-primary-dark rounded-md overflow-hidden">
+    
+    <Portrait
+      pictureSrc={pictureSrc}
+
+      widthMobile={100}
+      heightMobile={120}
+
+      widthMd={140}
+      heightMd={160}
+
+      widthLap={170}
+      heightLap={200}
+
+      widthXl={200}
+      heightXl={240}
+
+      widthDesktop={220}
+      heightDesktop={260}
+    />
+  </div>
+
+  <div class="flex flex-col gap-3 w-[232px] md:w-[400px] lap:w-[500px] xl:w-[600px] lg:w-[700px]">
+    <div class="flex flex-col lg:gap-2">
+      <h3 class="md:text-xl lap:text-2xl xl:text-3xl lg:text-4xl uppercase">{title}</h3>
+      <h4 class="md:text-lg lap:text-xl xl:text-2xl lg:text-3xl">{name}</h4>
+    </div>
+    {description && <p class="md:text-base lap:text-lg xl:text-xl lg:text-xl">{description}</p>}
+  </div>
+</article>

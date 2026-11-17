@@ -1,0 +1,81 @@
+---
+import { init, getLocale } from '@utils/i18n/get-locale';
+import { getNewsCategories } from '../data/news-categories';
+
+const locale = getLocale(Astro.url); 
+const { t } = init(Astro.url);
+const links = getNewsCategories(locale, t);
+
+let activeAmount = 0;
+let indexOfActive = -1;
+
+const processedLinks = getLinksWithMarkedActiveAndMovedItToBeAtFirstPosition(links);
+
+function getLinksWithMarkedActiveAndMovedItToBeAtFirstPosition(links) {
+  return links.slice().reverse().map((link, index) => {
+    const isActive = Astro.url.pathname.includes(link.baseUrl) && activeAmount < 1;
+
+    if (isActive) {
+      activeAmount += 1;
+      indexOfActive = links.length - 1 - index; // reverse index
+    }
+
+    return ({
+      ...link,
+      href: `${link.baseUrl}/1`,
+      active: isActive,
+    });
+  }).reverse();
+}
+
+if (isIndexActive(indexOfActive)) {
+  moveItemByIndexToTheFirstPosition(processedLinks, indexOfActive);
+}
+
+function isIndexActive(index) {
+  return index >= 0;
+}
+
+function moveItemByIndexToTheFirstPosition(array, index) {
+  if (!Array.isArray(array)) {
+    throw new Error('An actual array must be passed');
+  }
+
+  if (array.length === 0) {
+    return;
+  }
+
+  if (index < 0 || index > array.length - 1) {
+    throw new Error('Invalid index');
+  }
+
+  const itemToSetAtFirstPosition = array.splice(index, 1)[0];
+  array.unshift(itemToSetAtFirstPosition);
+}
+---
+
+<nav class="relative mb-8 lap:w-fit md:pr-8  md:mb-8 lap:pr-10 lap:pl-10 lap:mb-12 xl:pr-12 xl:pl-12 xl:mb-16">
+    <span
+      class="absolute h-[2px] w-9/12 bg-secondary-400-dark dark:bg-primary-dark bottom-0 left-0 lap:dark:bg-primary-dark lap:w-full">
+      <i
+        class="block absolute border border-secondary-400-dark dark:border-primary-dark -rotate-45 border-r-2 border-b-2 border-t-0 border-l-0 p-1 rounded-sm right-0 top-1/2 -translate-y-1/2 lap:hidden"
+      ></i>
+      <i
+        class="hidden absolute size-3 rounded-full dark:bg-primary-dark bg-secondary-400-dark lap:block top-1/2 right-0 -translate-y-1/2"
+      ></i>
+    </span>
+  <ul
+    class="flex gap-5 md:gap-6 lap:gap-8 xl:gap-10 lg:gap-12 overflow-x-scroll py-3 lap:overflow-visible md:py-3.5 lap:py-4 xl:py-4 lg:py-5">
+    {
+      processedLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class=`text-nowrap dark:text-[#52CCF2] text-background-dark   lap:text-[17px] xl:text-lg lg:text-lg hover:underline cursor-pointer ${link.active && 'underline'}`>
+            {link.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

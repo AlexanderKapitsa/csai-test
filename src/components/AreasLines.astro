@@ -1,0 +1,42 @@
+---
+const commonStyles = `bg-secondary-400-dark dark:bg-primary-dark`;
+---
+
+<!-- First horizontal line -->
+<div
+  class={`absolute left-0 top-0 w-[293px] md:w-[635px] lap:w-[825px] xl:w-[1005px] lg:w-[1110px] h-[2px] xl:h-[3px] ${commonStyles}`}
+></div>
+
+<!-- 45 degree line -->
+<div
+  class={`absolute w-12 top-[16px] -right-[20px] rotate-[45deg] md:rotate-[37deg] lap:rotate-[33deg] xl:rotate-[29deg] md:w-[105px] md:top-[33px] md:-right-[25px] lap:w-[160px] lap:top-[43px] lap:-right-[25px] xl:-right-[28px] xl:w-[220px] xl:top-[53px] lg:top-[50px] lg:-right-[30px] lg:rotate-[25deg] lg:w-[240px] h-[2px] xl:h-[3px] ${commonStyles}`}
+></div>
+<!-- Main vertical line -->
+<div
+  class={`absolute bottom-0 h-[277px] md:h-[455px] lap:h-[530px] lap:-right-[15px] xl:h-[565px]  lg:h-[745px] right-[-13px] lg:-right-[20px] w-[2px] xl:w-[3px] ${commonStyles}`}
+></div>
+
+<!-- Last horizontal line -->
+<div
+  class={`absolute left-0 bottom-0 sm:w-[325px] md:w-[715px] lap:w-[957px] xl:w-[1198px] lg:w-[calc(100%+20px)] h-[2px] xl:h-[3px] ${commonStyles}`}
+></div>
+
+<!-- Tree continuation vertical lines -->
+<!-- motion - is a class controlled by GSAP allows to animate initial appear. It does not contain styles, though. -->
+<div
+  class={`motion absolute bottom-[165px] md:bottom-0 right-[38px]  md:right-[95px] md:h-[1350px] lap:right-[145px] lap:h-[1350px]  xl:right-[207px] xl:h-[1470px] lg:right-[230px] w-[1px] xl:w-[2px] h-[1010px] lg:h-[1630px] -z-10 ${commonStyles}`}
+></div>
+<div
+  class={`motion absolute bottom-[308px] md:bottom-[520px] md:h-[1030px] md:right-[70px] right-[22px] lap:right-[120px]  lap:bottom-[615px] lap:h-[600px] xl:right-[177px] xl:h-[950px] xl:bottom-[670px] lg:right-[197px] w-[1px]  lg:bottom-[845px] xl:w-[2px] h-[860px] lg:h-[700px] -z-10 ${commonStyles}`}
+></div>
+
+<div
+  class={`absolute top-0 left-6 h-16 w-[2px] md:hidden ${commonStyles}`}
+></div>
+<div
+  class={`absolute bottom-14 sm:right-[-12px] h-[2px] w-8 md:hidden ${commonStyles}`}
+></div>
+<div
+  class={`absolute bottom-0 left-16 h-24 w-[2px] md:hidden ${commonStyles}`}
+></div>
+

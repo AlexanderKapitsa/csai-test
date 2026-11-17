@@ -1,0 +1,54 @@
+---
+import MainLayout from './MainLayout.astro';
+import DateFormatter from '../utils/date-formatter.js';
+import NewsPicture from '@comp/NewsCustomComponents/NewsPicture.astro';
+import LatestNews from '@comp/LatestNews.astro';
+import Copyright from '@comp/Copyright.astro';
+import TagsListNews from '@comp/TagsListNews.astro';
+
+const FACULTY_AUTHOR = 'CSAI';
+
+const { frontmatter, url } = Astro.props;
+const { title, createdAt, src, alt } = frontmatter;
+---
+
+<MainLayout pageTitle={title}>
+  <script is:inline src="/lib/iframe-initializer.min.js"></script>
+  <article
+    data-pagefind-body
+    class="flex flex-col gap-8 md:max-w-[570px] lap:max-w-[800px] xl:max-w-[950px] lg:max-w-[1140px] mx-auto mt-4 md:mt-8 lap:mt-8 xl:mt-8 lg:mt-6 max-lg:mt-6 mb-6 lg:mb-12">
+    <div class="flex gap-2 items-start mb-5  lap:gap-4 lg:gap-6 lg:mt-20 md:justify-between">
+      <h2
+        class="whitespace-normal font-bold py-2 px-4 rounded-md bg-secondary-400-dark border-secondary-400-dark border-4 dark:border-primary-dark lg:border-8 dark:bg-primary-dark text-white dark:text-background-dark md:text-xl lap:text-2xl xl:text-3xl lg:text-4xl md:basis-[380px] lap:basis-[550px] xl:basis-[650px] lg:basis-[800px] w-full lap:py-4 lap:px-8 xl:rounded-[40px] lg:py-5 lg:px-10 lg:rounded-[40px]"
+        data-pagefind-meta="title">
+        {title}
+      </h2>
+      <p
+        class="text-xs bg-secondary-300-light border-4 border-secondary-300-light dark:bg-transparent xl:border-8 dark:border-primary-dark text-primary-light dark:text-white px-2 py-3 rounded-md md:text-xl lap:text-2xl xl:text-3xl md:px-4 lap:px-6 xl:py-4 xl:px-8 lap:rounded-[40px] lg:text-4xl lg:py-5 lg:px-10 lg:rounded-[40px] "
+        data-pagefind-meta="date"
+        data-pagefind-ignore>
+        {DateFormatter.formatShortDate(createdAt)}
+      </p>
+    </div>
+
+    <!-- The rest of CSS styling is in tailwind.config.mjs under "theme->extend->typography" -->
+    <div
+      class={`space-y-0 mx-auto w-full  lap:w-[800px] xl:w-[860px] lg:w-[920px] hyphens-auto prose md:prose-lg lap:prose-xl xl:prose-xl lg:prose-2xl dark:prose-invert prose-h2:text-xl md:prose-h2:text-2xl lap:prose-h2:text-[28px] xl:prose-h2:text-[30px] lg:prose-h2:text-3xl prose-img:rounded-md prose-img:w-auto max-md:prose-img:w-full md:prose-img:h-[380px] lap:prose-img:h-[380px] xl:prose-img:h-[380px] lg:prose-img:h-96 prose-img:border-2 prose-img:border-secondary-400-dark dark:prose-img:border-primary-dark prose-figure:my-0 prose-p:my-0 prose-a:brightness-90`}>
+      {
+        src && (
+          <div class="mb-8">
+            <NewsPicture src={src} alt={alt} />
+          </div>
+        )
+      }
+      <slot />
+      <div class="pt-6 lg:pt-10 dark:text-primary-dark">
+        <Copyright text={FACULTY_AUTHOR} />
+      </div>
+    </div>
+  </article>
+  <div class="pt-16 lg:pt-36">
+    <TagsListNews frontmatter={frontmatter} />
+    <LatestNews ignoreNewsUrl={url} />
+  </div>
+</MainLayout>

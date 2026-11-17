@@ -1,0 +1,26 @@
+---
+import SearchForm from './SearchForm.astro';
+import SearchIcon from './SearchIcon.astro';
+---
+
+<div class="relative flex items-center" id="search-panel-wrapper">
+  <button
+    id="search-toggle"
+    class="shadow-hover dark:border-primary-dark rounded-r-[100%] py-2 lg:px-4 px-2"
+    onclick="
+    document.getElementById('search-slide-panel').classList.toggle('invisible');
+    document.getElementById('search-slide-panel').classList.toggle('translate-x-full');
+    document.getElementById('query').focus();"
+  >
+    <span class="relative lg:-left-1.5 -left-2">
+      <SearchIcon />
+    </span>
+  </button>
+
+  <div
+    id="search-slide-panel"
+    class="invisible absolute right-full -top-[3px] w-[300px] lg:w-[450px] translate-x-full bg-inherit transition-transform duration-300 z-50"
+  >
+    <SearchForm />
+  </div>
+</div>

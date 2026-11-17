@@ -1,0 +1,18 @@
+---
+interface Props {
+  show?: boolean;
+  message?: string;
+}
+const { show = true, message = 'Loading...' } = Astro.props as Props;
+---
+
+{
+  show ? (
+    <div class="loader-overlay" role="status" aria-live="polite">
+      <div class="loader-box" aria-hidden="false">
+        <div class="loader" aria-hidden="true" />
+        <div class="loader-message">{message}</div>
+      </div>
+    </div>
+  ) : null
+}

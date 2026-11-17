@@ -1,0 +1,33 @@
+---
+import InstagramGuts from './InstagramGuts.astro';
+const { id, description } = Astro.props;
+
+const PRE_CAPTION = 'Пост в Instagram';
+
+const finalCaption = `${PRE_CAPTION}: ${description}`;
+---
+
+<figure data-instagram-embed>
+  <div
+    class="max-lg:relative max-lg:-left-[32px] mx-auto max-lg:scale-75 origin-top w-[374px] lg:w-[500px] border-2 rounded-md border-secondary-400-dark dark:border-primary-dark overflow-hidden">
+    <InstagramGuts id={id} />
+  </div>
+
+  <figcaption class="mx-auto w-[280px] lg:w-[720px] text-center">
+    {finalCaption}
+  </figcaption>
+
+  <script is:inline>
+    (() => {
+      const mainSel = '.instagram-media';
+      const fallbackSel = '.instagram-media-registered';
+      const wrapperSel = '[data-instagram-embed]';
+
+      const adjusters = {
+        containerSelectorFn: (el) => el.parentElement.parentElement,
+        };
+
+      IframeInitializerPool.getInitializer(mainSel, fallbackSel, wrapperSel).initialize(adjusters);
+      })();
+  </script>
+</figure>

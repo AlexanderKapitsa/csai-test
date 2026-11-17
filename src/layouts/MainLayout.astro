@@ -1,0 +1,171 @@
+---
+import '../styles/main.scss';
+import Header from '@comp/Header.astro';
+import Footer from '@comp/Footer.astro';
+import Favicon from '@comp/Favicon.astro';
+import EnvBanner from '@comp/EnvBanner.astro';
+import SmallHeader from '@comp/SmallHeader.astro';
+import { Icon } from 'astro-icon/components';
+const { pageTitle } = Astro.props;
+---
+
+<html lang="uk" class="overflow-x-hidden">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preload"
+      href="/fonts/jura-cyrillic-700-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/jura-latin-700-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <Favicon />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+
+    <script is:inline>
+      const supportedLocales = ['uk', 'en'];
+      const browserLang = navigator.language.slice(0, 2).toLowerCase();
+
+      // If no language is stored, set it as browser's language
+      const storedLang =
+        localStorage.getItem('lang') ||
+        (supportedLocales.includes(browserLang)
+          ? browserLang
+          : supportedLocales[0]);
+      localStorage.setItem('lang', storedLang);
+
+      // Redirect to the stored language if it differs from the pathname
+      const currentPath = location.pathname;
+      const pathSegments = currentPath.split('/');
+      const currentLocale =
+        pathSegments.find((s) => supportedLocales.includes(s)) ||
+        supportedLocales[0];
+
+      if (storedLang !== currentLocale) {
+        const newSegments = [...pathSegments];
+        const localeIndex = newSegments.findIndex((s) =>
+          supportedLocales.includes(s)
+        );
+
+        if (localeIndex !== -1) {
+          newSegments[localeIndex] = storedLang;
+        } else {
+          newSegments.splice(0, 1, storedLang);
+        }
+
+        const targetUrl = '/' + newSegments.filter(Boolean).join('/');
+        window.location.replace(targetUrl);
+      }
+    </script>
+  </head>
+  <body
+    class="whitespace-pre-line text-primary-light dark:text-primary-dark bg-background-light dark:bg-background-dark overflow-x-clip"
+  >
+    <script is:raw>
+      (() => {
+        const body = document.body;
+        const setDark = (shouldSetDark) => {
+          if (shouldSetDark) {
+            body.classList.add('dark');
+            return;
+          }
+
+          body.classList.remove('dark');
+        };
+
+        const currentTheme = window.localStorage.getItem('theme');
+
+        if (!currentTheme) {
+          setDark('"system"');
+        }
+
+        switch (currentTheme) {
+          case '"dark"':
+            return setDark(true);
+          case '"light"':
+            return setDark(false);
+          default:
+            setDark(window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+      })();
+    </script>
+
+    <script is:inline>
+      (async () => {
+        if (document.body.dataset.loaded !== 'true') {
+          window.pagefind = await import('/pagefind/pagefind.js');
+          document.body.dataset.loaded = 'true';
+        }
+      })();
+    </script>
+
+<div class="relative container">
+  <Header />
+  <div>
+    <main>
+      <div>
+        <h1>
+          {/*pageTitle*/}
+        </h1>
+        <slot />
+      </div>
+    </main>
+    <Footer />
+    <EnvBanner />
+    <button
+        id="scrollToTopBtn"
+        type="button"
+        class="fixed bottom-6 right-6 z-50 rounded-full text-white shadow-lg transition-opacity duration-300 opacity-0 hover:text-primary-dark"
+        style="display: none;"
+      >
+        <Icon
+          class="rotate-180 w-12 lg:w-[60px] h-12 lg:h-[60px] bg-background-light dark:bg-background-dark text-secondary-400-dark dark:text-primary-dark border border-secondary-400-dark dark:border-primary-dark rounded-full"
+          name="res-inst/res-inst-action-down-arrow"
+        />
+      </button>
+  </div>
+</div>
+
+    <script is:raw>
+      document.addEventListener('DOMContentLoaded', () => {
+        const langSwitch = document.querySelector('[data-lang-switch]');
+        if (langSwitch) {
+          langSwitch.addEventListener('click', () => {
+            const newLang = langSwitch.getAttribute('data-lang-switch');
+            if (newLang) {
+              localStorage.setItem('lang', newLang);
+            }
+          });
+        }
+      });
+
+      const checkScrollPosition = () => {
+        if (window.scrollY > 200) {
+          scrollBtn.style.display = 'block';
+          scrollBtn.style.opacity = '1';
+        } else {
+          scrollBtn.style.opacity = '0';
+          setTimeout(() => {
+            if (scrollBtn.style.opacity === '0')
+              scrollBtn.style.display = 'none';
+          }, 300);
+        }
+      };
+      const scrollBtn = document.getElementById('scrollToTopBtn');
+      window.addEventListener('DOMContentLoaded', checkScrollPosition);
+      window.addEventListener('scroll', checkScrollPosition);
+      scrollBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    </script>
+  </body>
+</html>

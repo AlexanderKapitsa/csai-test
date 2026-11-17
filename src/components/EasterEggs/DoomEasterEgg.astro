@@ -1,0 +1,144 @@
+---
+import Button from '../Button.astro';
+---
+
+<div id="dos-wrapper" class="hidden">
+  <div id="dos"
+       class="w-[320px] h-[200px] max-w-[320px] max-h-[200px] lg:w-[400px] lg:h-[250px] lg:max-w-[400px] lg:max-h-[250px]"></div>
+  <br>
+  <div id="fullscreen-button">
+    <Button size="md" title="Увімкнути повний екран" />
+  </div>
+</div>
+
+<script is:inline>
+  const DESIRED_INPUT = 'iddqd';
+
+  const inputRef = document.getElementById('query');
+  const doomLoadedEvent = new Event('doom-loaded');
+
+  inputRef.addEventListener('input', async (event) => {
+    const value = event.target.value;
+    const normalizedValue = value.toLowerCase();
+
+    if (normalizedValue !== DESIRED_INPUT) {
+      return;
+    }
+
+    await dosboxInit();
+  });
+
+  async function dosboxInit() {
+    const dosContainerRef = document.getElementById('dos-wrapper');
+    const dosRef = document.getElementById('dos');
+
+    inputRef.disabled = true;
+    inputRef.value = 'Loading...';
+    await import('/lib/dos.js');
+
+    emulators.pathPrefix = 'lib/';
+    await Dos(dosRef, {
+      style: 'none',
+    }).run('bundle.jsdos');
+
+    remainOnlyCanvas();
+
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        const button = document.getElementById('fullscreen-button');
+
+        button.addEventListener('click', () => {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else {
+            dosRef.requestFullscreen();
+          }
+
+          dosRef.classList.toggle('full-size');
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+          console.log('Full screen change');
+          const hasExitedFullscreen = document.fullscreenElement === null;
+
+          if (hasExitedFullscreen) {
+            dosRef.classList.remove('full-size');
+            makeCanvasOfNormalSize();
+            return;
+          }
+
+          makeCanvasFullWidthAndHeight();
+        });
+
+        document.querySelector('.overall-search-results').style.display = 'none';
+        document.querySelector('.overall-query-input').style.display = 'none';
+        dosContainerRef.classList.remove('hidden');
+        resolve();
+      }, 2000);
+    });
+
+    function remainOnlyCanvas() {
+      const canvas = document.querySelector('#dos canvas');
+
+      dosRef.textContent = '';
+
+      dosRef.appendChild(canvas);
+    }
+
+    const canvas = document.querySelector('#dos canvas');
+    makeCanvasOfNormalSize();
+
+    const button = document.getElementById('fullscreen-button');
+    button.removeAttribute('disabled');
+
+    document.dispatchEvent(doomLoadedEvent);
+
+    function makeCanvasFullWidthAndHeight() {
+      if (window.innerWidth <= window.innerHeight) {
+        canvas.style.width = '100%';
+        canvas.style.height = `${canvas.clientWidth / 4 * 3}px`;
+        return;
+      }
+
+      canvas.style.height = '100%';
+      canvas.style.width = `${canvas.clientHeight / 3 * 4}px`;
+    }
+
+    function makeCanvasOfNormalSize() {
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+    }
+  }
+</script>
+
+<script>
+  import { notifyPointsGained } from '../../utils/points-notifier';
+  import { EasterEggOperator, EggsKeys } from '../../utils/easter-egg-operator';
+
+  document.addEventListener('doom-loaded', () => {
+    EasterEggOperator.completeByKey(EggsKeys.DOOM_CODE);
+
+    const easterEggListOperator = EasterEggOperator.listOperator;
+    const pointsGained = easterEggListOperator.getByKey(EggsKeys.DOOM_CODE).points;
+    notifyPointsGained(pointsGained);
+  });
+
+</script>
+
+<style>
+  #dos.full-size {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #dos > canvas {
+    width: 100%;
+    height: 100%;
+  }
+</style>

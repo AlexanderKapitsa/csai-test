@@ -1,0 +1,28 @@
+---
+import RedirectLinkButton from './Shared/RedirectLinkButton.astro';
+import SubtitleOutlined from './SubtitleOutlined.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+---
+
+<div class="lg:mt-8 xl:w-2/5 text-center mt-12 w-full  lg:min-h-[640px]">
+  <SubtitleOutlined text=`${t("contacts.mapFindUs")}` centered />
+  <p class="xl:hidden w-full text-left md:text-center md:text-lg lap:text-xl mx-auto mt-4">
+    {t('contacts.mapAddress')}
+  </p>
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3489.3949292509087!2d36.22940512939411!3d50.006824485055404!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4127a0dff3c08f8b%3A0xcff23a70c20c6f80!2z0KXQsNGA0YzQutC-0LLRgdC60LjQuSDQndCw0YbQuNC-0L3QsNC70YzQvdGL0Lkg0KPQvdC40LLQtdGA0YHQuNGC0LXRgg!5e0!3m2!1suk!2sua!4v1720705890435!5m2!1suk!2sua"
+    allowfullscreen
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    class="my-0 mx-auto md:w-9/12 lap:w-8/12 xl:w-10/12 lg:w-11/12 lg:mt-5 w-full h-96 mt-4 border-4 border-background-dark dark:border-primary-dark select-none rounded-[50px]"
+  ></iframe>
+  <p class="lap:mt-3 xl:mt-4 lg:mt-5 xl:text-2xl lg:text-3xl xl:block hidden">
+    {t('contacts.mapAddress')}
+  </p>
+  <RedirectLinkButton
+    href="https://maps.app.goo.gl/VuyyHnxSLvgvbEAp6"
+    class="lg:mt-5  lg:text-3xl lg:py-4 lg:px-9 w-full mt-4 py-2 px-6 inline-block rounded-full bg-secondary-400-dark dark:bg-primary-dark text-background-light select-none"
+    target="_blank" label={t('contacts.mapButton')}></a>
+</div>

@@ -1,0 +1,13 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = "w-4 h-4 flex-shrink-0" } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 24a12 12 0 1 1 12-12 12 12 0 0 1-12 12zm0-22a10 10 0 1 0 10 10A10 10 0 0 0 12 2z" fill="#4285F4" opacity="0.15"/>
+  <path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5s-5.548 1.749-6.758 4.269z" fill="#4285F4"/>
+  <path d="M12 10a7 7 0 1 0 7 7 7 7 0 0 0-7-7zm0 11.5a4.5 4.5 0 1 1 4.5-4.5 4.5 4.5 0 0 1-4.5 4.5z" fill="#34A853"/>
+</svg>

@@ -1,0 +1,67 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  title: string;
+  href: string;
+  iconMobile: string;
+  iconDesktop: string;
+  isRight?: boolean;
+  num: number;
+}
+const {
+  title,
+  href,
+  num,
+  iconMobile,
+  iconDesktop,
+  isRight = false,
+} = Astro.props;
+---
+
+<div
+  class={'shadow-hover flex relative ' +
+    (isRight ? 'md:justify-end' : 'justify-end md:justify-start')}
+>
+  <div class="relative z-10 inline-block">
+    <span
+      class={'md:w-[10px] lap:w-[33px] xl:w-[110px] lg:w-[120px] bg-secondary-400-dark dark:bg-primary-dark absolute left-full top-1/2 hidden h-[1px]  xl:h-[3px]  ' +
+        (isRight ? 'hidden' : 'md:block')}></span>
+    <a
+      class={'group hover:scale-[1.01] transition-transform inline-flex md:min-w-[380px] lap:min-w-[450px] xl:min-w-[672px] border-2 bg-background-light dark:bg-background-dark border-secondary-400-dark dark:border-primary-dark dark:hover:border-[#088faa] rounded-full overflow-hidden  min-w-44 justify-between items-center h-11 gap-1 md:gap-7 md:h-[72px] lap:h-20  xl:h-20 lg:h-24 flex-row md:border-[3px] select-none' +
+        (isRight ? 'pl-2 md:pl-10' : 'pr-2 lg:pr-10 md:flex-row-reverse')}
+      href={`${href}`}
+      onclick={`(e) => {
+        e.preventDefault();
+        window.location.href = window.location.origin + href;
+      }`}
+    >
+      <span
+        class="uppercase text-center sm:text-[0.7rem]/[0.8rem] basis-full md:text-left md:text-base lap:text-lg xl:text-xl lg:text-2xl md:max-w-[330px] lap:min-w-[400px] xl:max-w-[500px] xl:min-w-[500px] max-w-[200px] min-w-[200px]"
+      >
+        {title}
+      </span>
+      <span
+        class="h-full bg-background-light overflow-hidden rounded-full relative shrink-0 w-10 md:w-56 lap:w-80 lg:grow lg:w-96"
+      >
+        <span
+          class="absolute top-0 left-0 flex justify-center items-center size-full"
+        >
+          <Icon name={iconDesktop} class="size-[200%] hidden md:block" />
+          <Icon name={iconMobile} class="size-[200%] md:hidden" />
+        </span>
+        <span
+          class={'group-hover:-rotate-0 transition-transform overflow-hidden rounded-full -rotate-45  bg-background-light absolute top-1/2 -translate-y-1/2 ' +
+            (isRight
+              ? 'left-1/2 -translate-x-1/2 md:translate-x-0 md:left-6'
+              : 'right-1/2 translate-x-1/2 md:translate-x-0 md:right-6')}
+        >
+          <Icon
+            name="arrow-right"
+            class="dark:text-background-dark text-secondary-400-dark size-7 md:size-10 lg:size-12"
+          />
+        </span>
+      </span>
+    </a>
+  </div>
+</div>

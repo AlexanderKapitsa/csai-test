@@ -1,0 +1,9 @@
+---
+const { label, href, openNewPage } = Astro.props;
+---
+
+<a
+  href={href}
+  class="lg:w-[400px] lap:w-[300px] xl:w-[370px] rounded-3xl bg-secondary-400-dark dark:bg-primary-dark p-5 mb-4 md:text-lg lap:text-xl xl:text-2xl lg:text-3xl text-background-light dark:text-background-dark block"
+  target=`${openNewPage?"_blank":""}`>{label}</a
+>

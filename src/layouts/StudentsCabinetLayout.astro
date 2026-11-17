@@ -1,0 +1,115 @@
+---
+import MainLayout from './MainLayout.astro';
+import CentralPanel from '@comp/Shared/CentralPanel.astro';
+import LeftPanel from '@comp/Shared/LeftPanel.astro';
+import RightPanel from '@comp/Shared/RightPanel.astro';
+import LeftPanelWide from '@comp/Shared/LeftPanelWide.astro';
+import BasicPageHeader from '@comp/Shared/BasicPageHeader.astro';
+import BasicMobilePageHeader from '@comp/Shared/BasicMobilePageHeader.astro';
+import BasicParagraph from '@comp/Shared/BasicParagraph.astro';
+import BasicLongTextParagraph from '@comp/Shared/BasicLongTextParagraph.astro';
+import RoundBorderCard from '@comp/StudentsOffice/RoundBorderCard.astro';
+import RedirectLinkButton from '@comp/Shared/RedirectLinkButton.astro';
+import TextAccent from '@comp/Shared/TextAccent.astro';
+import LinkIcon from '../components/LinkIcon';
+import DocumentLink from '@comp/Shared/DocumentLink.astro';
+import { marked } from 'marked';
+const { frontmatter } = Astro.props;
+---
+
+<MainLayout pageTitle={frontmatter.title}>
+  <div data-pagefind-body>
+    <CentralPanel className="flex justify-between">
+      <LeftPanel>
+        <BasicPageHeader title={frontmatter.pageHeader} />
+        <BasicMobilePageHeader title={frontmatter.pageHeader} />
+        <BasicParagraph skipCropLongText={true} text={frontmatter.aboutStudentsCabinet} />
+      </LeftPanel>
+      <RightPanel className="lg:pl-20 pl-1">
+        {frontmatter.navigation.map((item) => (
+          <RoundBorderCard href={item.href} label={item.label} />
+        ))}
+      </RightPanel>
+    </CentralPanel>
+
+    {frontmatter.videoSections.map((section, index) => {
+      const iframeClasses = index === 0
+        ? "md:w-[340px] lap:w-[398px] lap:h-[234px] xl:w-[498px] xl:h-[290px] lg:w-[560px] lg:h-[325px] md:pt-2 sm:pt-8 lap:pt-6 lg:pt-8 pb-8"
+        : "md:w-[340px] lap:w-[380px] lap:h-[234px] xl:w-[498px] xl:h-[290px] lg:w-[560px] lg:h-[325px] md:pt-2 sm:pt-8 lap:pt-6 lg:pt-8 pb-8";
+
+      return (
+        <>
+          <CentralPanel id={section.id}>
+            <BasicPageHeader title={section.title} />
+            <BasicMobilePageHeader title={section.title} />
+          </CentralPanel>
+
+          <CentralPanel className="xl:flex xl:justify-between">
+            <LeftPanel className="!w-[100%]">
+              {section.richContent && (
+                <BasicLongTextParagraph>
+                  <div set:html={marked.parse(section.richContent)} class="text-inherit [&_p]:mb-4 [&_a]:underline hover:[&_a]:text-secondary-400-dark [&_strong]:font-bold" />                </BasicLongTextParagraph>
+              )}
+            </LeftPanel>
+
+            <RightPanel>
+              <iframe
+                class={iframeClasses}
+                src={section.iframe.src}
+                title={section.iframe.title}
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+              {section.button && (
+                <RedirectLinkButton
+                  className="text-center"
+                  href={section.button.href}
+                  label={section.button.label}
+                />
+              )}
+            </RightPanel>
+          </CentralPanel>
+        </>
+      )
+    })}
+
+    <CentralPanel id="admissionTOT">
+      <BasicPageHeader title={frontmatter.admissionTOTTitle} />
+      <BasicMobilePageHeader title={frontmatter.admissionTOTTitle} />
+    </CentralPanel>
+    <CentralPanel className="xl:flex xl:justify-between">
+      <LeftPanelWide className="!w-[100%]">
+        <BasicLongTextParagraph text={frontmatter.admissionTOTText} />
+      </LeftPanelWide>
+      <RightPanel className="xl:pl-16 lg:pl-20 pl-1 sm:pt-5 md:pt-1 xl:pt-5">
+        <RedirectLinkButton
+          className="text-center"
+          href={frontmatter.admissionTOTButton.href}
+          label={frontmatter.admissionTOTButton.label}
+        />
+      </RightPanel>
+    </CentralPanel>
+
+    <CentralPanel>
+      <BasicPageHeader title={frontmatter.importantDocumentsTitle} />
+      <BasicMobilePageHeader title={frontmatter.importantDocumentsTitle} />
+      {/* Загортаємо список у LeftPanelWide для правильних відступів */}
+      <LeftPanelWide className="pt-4 lg:pt-8 xl:pt-10">
+        <ul class="flex flex-col gap-4 lg:gap-[30px]">
+          {frontmatter.importantDocuments.map((doc) => (
+              <li class="flex items-center gap-2 lg:gap-4">
+                <LinkIcon className="text-secondary-400-dark dark:text-primary-dark w-4 h-4 lg:w-6 lg:h-6 shrink-0" />
+                <DocumentLink
+                    href={doc.href}
+                    openNewPage
+                    label={doc.label}
+                />
+              </li>
+          ))}
+        </ul>
+      </LeftPanelWide>
+    </CentralPanel>
+  </div>
+</MainLayout>

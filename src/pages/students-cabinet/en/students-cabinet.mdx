@@ -1,0 +1,82 @@
+---
+layout: ../../../layouts/StudentsCabinetLayout.astro
+updatedAt: '2026-02-05T12:00:00.000Z'
+createdAt: '2026-02-05T12:00:00.000Z'
+
+title: "Applicant's Office"
+pageHeader: "Instructions for the Applicant's Office"
+aboutStudentsCabinet: >
+  To apply to higher education institutions and go through the admissions
+  procedure, you must register an electronic account.
+
+navigation:
+  - href: '#videoInstruction'
+    label: "Video instructions for registering a student's account"
+  - href: '#kepVideoInstruction'
+    label:
+      'Instructions for using KEP to sign documents via the Diya application'
+  - href: '#admissionTOT'
+    label:
+      'Admission for applicants from the temporarily occupied territories of
+      Ukraine'
+
+videoSections:
+  - id: 'videoInstruction'
+    title: "Video instructions for registering a student's account"
+    richContent: |
+      To register an electronic account for the applicant, you need to go to the [official website](https://vstup.edbo.gov.ua/) and specify the email address that will be used as a login. The system will automatically check the uniqueness of the login, and if one already exists, you need to specify a different email address. It is important to use only mail services allowed in Ukraine, since addresses on mail.ru and yandex.ru are not accepted.
+
+      After entering your email address, you will receive an email with a link to activate your account. You must click on this link to confirm your registration.
+
+      The next step is to fill out the registration form. The applicant must provide the data of the external assessment certificate or NMT: number, pin code, and year of receipt. If the applicant has several external assessment certificates, only one of them is used for registration, and the others can be added after registration is completed. It is also necessary to enter information from the certificate of complete general secondary education: series and document number.
+
+      Registration for an electronic account is possible only for holders of certificates issued no earlier than 1998. If the certificate was issued before this year, you can only submit an application in paper form directly at the educational institution.
+
+      If the applicant does not have an external examination or NMT certificate, they can check the box 'I do not have NMT certificates (external examination)' and complete the registration using only an identity document.
+    iframe:
+      src: 'https://www.youtube.com/embed/oojfCnL_MQM?si=95dwtah9ghTg6r6b'
+      title: 'YouTube video player'
+    button:
+      href: 'https://vstup.edbo.gov.ua/'
+      label: "Go to the Applicant's Account"
+
+  - id: 'kepVideoInstruction'
+    title:
+      'Instructions for using KEP to sign documents via the Diya application'
+    richContent: |
+      To sign documents using a qualified electronic signature (QES) in the **Diya** application, you need to follow a few simple steps.
+
+      First, make sure that the current **Diya** application is installed on the smartphone and the user is authorized in it. To create an electronic signature, you need to open the **Diya.Signature** section and go through verification using **FaceID/face scan technology**. This provides an additional level of signature protection.
+
+      To sign a document, you need to open it in PDF format in **Diya** or download it via the web version of the service. Then you need to select the **"Sign with Diya.Signature"** function, confirm your identity by scanning your face, after which the document will be signed.
+    iframe:
+      src: 'https://www.youtube.com/embed/POiXi3n5PDE?si=UWDWoDzBGX9cHrrP'
+      title: 'YouTube video player'
+    button:
+      href: 'https://diia.gov.ua/services/pidpisannya-dokumentiv'
+      label: 'Signing Documents'
+
+admissionTOTTitle:
+  'Admission for applicants from the temporarily occupied territories of Ukraine'
+admissionTOTText: >
+  The Educational Center "Crimea - Donbas - Ukraine" of the V.N. Karazin Kharkiv
+  National University (hereinafter referred to as the Center) was created to
+  carry out activities to ensure the passing of annual assessment and state
+  final certification, as well as admission to higher education of persons whose
+  place of residence is the temporarily occupied territories of Ukraine. For
+  more details, see the link.
+admissionTOTButton:
+  href: 'https://karazin.ua/osvita/vstup-dlia-abituriientiv-z-nbsp-tymchasovo-okupovanykh-teryt/'
+  label: 'More about Admission'
+
+importantDocumentsTitle: 'Important Documents'
+importantDocuments:
+  - href: 'https://drive.google.com/file/d/1fpgXpmR3q7QZ_tz50yavXwMnpoJztV9B/view?usp=sharing'
+    label: 'List of Documents for Admission'
+  - href: 'https://drive.google.com/file/d/1VUObBnCurGK-yy9bkTg6xD6JQVMwp3yM/view?usp=sharing'
+    label: 'Requirements for Motivation Letters'
+  - href: 'https://drive.google.com/file/d/1FVyKQAjg8i97_8v1Pjz99mXCltkqHqdi/view?usp=sharing'
+    label: 'Admission Rules of V.N. Karazin KhNU'
+  - href: 'https://drive.google.com/file/d/1tmBHzZMQ-IbxNucaGkSKRxyzLtMpvj4F/view?usp=sharing'
+    label: 'Admission Rules of V.N. Karazin KhNU with Annexes'
+---

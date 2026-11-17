@@ -1,0 +1,107 @@
+---
+import orderBy from 'lodash.orderby';
+import { Icon } from 'astro-icon/components';
+import '../../public/lib/swiper.min.css';
+
+import EventCard from './EventCard.astro';
+import Subtitle from './Subtitle.astro';
+import { init, getLocale } from '@utils/i18n/get-locale.js';
+
+const locale = getLocale(Astro.url); 
+const { t } = init(Astro.url);
+let allNewsPages = await Astro.glob('../pages/news/*/*.mdx');
+let newsPages = allNewsPages.filter((f) => f.file.includes(`/${locale}/`));
+newsPages = newsPages.filter(
+  ({ frontmatter: { event } }) => event == true
+);
+
+const sortedEvents = orderBy(newsPages, [(e) => e.frontmatter.createdAt], ['desc']);
+const latestEvents = sortedEvents.slice(0, 8);
+
+const eventCardThemes = [
+  'text-background-dark bg-secondary-400-light dark:bg-primary-dark',
+  'text-background-light dark:text-background-dark bg-secondary-300-dark dark:bg-primary-dark',
+  'text-background-light dark:text-background-dark bg-secondary-700-dark dark:bg-primary-dark',
+  'text-background-light dark:text-background-dark bg-secondary-400-dark dark:bg-primary-dark',
+];
+---
+
+<section>
+  <div class="swiper">
+    <!-- Mobile version -->
+    <div class="xl:hidden">
+      <Subtitle text=`${t("mainPage.events")}` />
+    </div>
+    <!-- Desktop version -->
+    <div class="hidden xl:flex xl:justify-between xl:items-center">
+      <Subtitle text=`${t("mainPage.events")}` />
+      <div class="flex gap-4 text-secondary-400-dark dark:text-primary-dark">
+        {latestEvents.length > 4 &&
+          <div class="swiper-prev-arrow">
+            <Icon name="arrow-outline" width={54} height={54} />
+          </div>
+          <div class="swiper-next-arrow">
+            <div class="rotate-180">
+              <Icon name="arrow-outline" width={54} height={54} />
+            </div>
+          </div>}
+      </div>
+    </div>
+
+    {latestEvents.length > 0 &&
+      <ul class="swiper-wrapper">
+        {latestEvents.map(({ frontmatter, url }, index) => {
+          // Prevent first and last cards to be the same color
+
+          const eventCardThemesIndex = index % 4 === 0 && latestEvents.length === index + 1 ? (index + 1) % 4 : index % 4;
+
+          return (
+            <li class="swiper-slide">
+              <a href={url}>
+                <EventCard
+                  pictureSrc={frontmatter.src}
+                  text={frontmatter.title}
+                  additionalClasses={eventCardThemes[eventCardThemesIndex]}
+                />
+              </a>
+            </li>);
+        })}
+      </ul>}
+    {latestEvents.length === 0 && <p>Нема івентів</p>}
+  </div>
+</section>
+
+<script src="/lib/swiper-bundle.min.js" is:inline></script>
+<script is:inline>
+  // Instantiate
+  new Swiper('.swiper', {
+    slidesPerView: 1.6,
+    spaceBetween: '18px',
+    loop: true,
+    breakpoints: {
+      768: {
+        slidesPerView: 3,
+        spaceBetween: '32px',
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: '32px',
+      },
+      1280: {
+        slidesPerView: 3,
+        spaceBetween: '24px',
+      },
+      1440: {
+        slidesPerView: 4,
+        spaceBetween: '32px',
+      },
+    },
+    navigation: {
+      prevEl: '.swiper-prev-arrow',
+      nextEl: '.swiper-next-arrow',
+    },
+    mousewheel: {
+      forceToAxis: true,
+    },
+  });
+</script>

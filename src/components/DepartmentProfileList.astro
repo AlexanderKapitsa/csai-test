@@ -1,0 +1,25 @@
+---
+import DepartmentProfileItem from './DepartmentProfileItem.astro';
+import { getLocale } from '@utils/i18n/get-locale.js';
+
+const allFaculties = await Astro.glob('../pages/faculty/*/index.mdx');
+
+const locale = getLocale(Astro.url);
+let faculty = allFaculties.filter((f) => f.file.includes(`/${locale}/`));
+const people = faculty[0].frontmatter.people;
+---
+
+<ul class="flex flex-col gap-6 md:gap-8 lap:gap-10 xl:gap-12 lg:gap-16">
+  {
+    people.map(({ name, title, description, picture }) => (
+      <li>
+        <DepartmentProfileItem
+          pictureSrc={picture}
+          title={title}
+          name={name}
+          description={description}
+        />
+      </li>
+    ))
+  }
+</ul>

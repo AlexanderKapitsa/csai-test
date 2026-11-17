@@ -1,0 +1,36 @@
+---
+import { init } from '@utils/i18n/get-locale';
+import Subtitle from './Subtitle.astro';
+import InfrastructureCard from './AlternatingBlock';
+
+interface Props {
+  items: { description: string }[];
+}
+const { items } = Astro.props;
+const { t } = init(Astro.url);
+---
+
+{
+  items && items.length > 0 && (
+    <div class="mt-14 lap:mt-[64px] xl:mt-[72px] lg:mt-20">
+      <div class="lap:flex lap:flex-row items-center">
+        <Subtitle text={t('departments.infrastructure')} />
+        <div class="flex-1 xl:mt-14 xl:mb-6 lg:mt-16 lg:mb-8 relative h-0.5 lap:ml-3 xl:ml-4 bg-secondary-400-dark dark:bg-primary-dark">
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 size-2 md:size-3 rounded-full bg-secondary-400-dark dark:bg-primary-dark" />
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="mt-6 grid grid-cols-1 lap:grid-cols-3 gap-4">
+          {items.map(({ description }, index) => (
+            <InfrastructureCard
+              description={description}
+              className={index === 2 ? 'lap:row-span-2' : 'lap:aspect-[2/1]'}
+              client:only
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,15 @@
+---
+import { init } from "@utils/i18n/get-locale";
+import ActionButton from "./ActionButton.astro";
+
+const { url } = Astro.props;
+const { t } = init(Astro.url);
+---
+
+{
+  url && url.length > 0 && (
+    <div class="w-max mx-auto mt-14 lg:mt-20 -mb-10 lg:-mb-20">
+      <ActionButton title={t("departments.buttonBooklet")} href={url} openNewPage />
+    </div>
+  )
+}

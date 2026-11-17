@@ -1,0 +1,43 @@
+---
+import Portrait from './Portrait.astro';
+import { Icon } from 'astro-icon/components';
+let actualSrc = '';
+const { pictureSrc } = Astro.props;
+if (pictureSrc) {
+  actualSrc = pictureSrc.replaceAll('../../', '../');
+}
+---
+<div class="relative w-[130px] h-32 md:w-[220px] md:h-[270px] lap:w-[300px] xl:w-[330px] lg:w-[480px] lg:h-[420px]">
+  <div class="absolute bottom-16 right-[10%] md:bottom-40 md:right-[5px] lap:bottom-28 lap:right-[10px] xl:bottom-20 xl:right-[10%] lg:right-[15%] lg:-bottom-[5%]">
+    <Icon name="circle" class="size-[36px] md:size-[64px] lap:size-[90px] xl:size-[120px] lg:size-[150px] text-secondary-300-light dark:text-primary-dark" />
+  </div>
+  <div class="absolute -right-[5%] md:-right-[15%] lap:-right-[12%] xl:-right-[15%] lg:bottom-[12%] lg:-right-[5%]">
+    <Icon name="circle" class="size-[42px] md:size-[72px] lap:size-[104px] xl:size-[140px] lg:size-[176px] text-secondary-300-dark dark:text-transparent lap:dark:border-8 dark:border-4 dark:border-primary-dark dark:rounded-full" />
+  </div>
+  <div class="absolute -top-10 -left-[4%] md:-left-4 md:-top-20 lap:-left-8 lap:-top-28 xl:-top-32 xl:-left-10 lg:top-[18%] lg:-left-[4%]">
+    <Icon name="circle" class="size-[28px] md:size-[54px] lap:size-[80px] xl:size-[110px] lg:size-[120px] text-secondary-400-dark dark:text-transparent lap:dark:border-8 dark:border-4 dark:border-primary-dark dark:rounded-full" />
+  </div>
+  <div class="absolute -top-16 left-[5%] md:-top-28 lap:-top-40  lap:-left-[1%] xl:-top-44 xl:-left-[5px] lg:top-0 lg:left-[5%]">
+    <Icon name="circle" class="size-[38px] md:size-[60px] lap:size-[100px] xl:size-[130px] lg:size-[160px] text-secondary-300-light dark:text-primary-dark" />
+  </div>
+  <div
+    class="absolute left-1/2 lg:top-1/2 size-[118px] md:size-[220px] lap:size-[300px] xl:size-[340px] lg:size-[420px] -translate-x-1/2 -translate-y-1/2 border-[3px] md:border-[4px] lap:border-[6px] xl:border-[7px] lg:border-8 border-secondary-400-dark dark:border-primary-dark rounded-full overflow-hidden">
+    {pictureSrc &&
+      <Portrait
+        pictureSrc={pictureSrc}
+        widthMobile={112}
+        heightMobile={112}
+
+        widthMd={220}
+        heightMd={220}
+
+        widthLap={300}
+        heightLap={300}
+
+        widthXl={340}
+        heightXl={340}
+
+        widthDesktop={480}
+        heightDesktop={480} />}
+  </div>
+</div>

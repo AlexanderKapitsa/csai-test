@@ -1,0 +1,35 @@
+---
+import { init } from '@utils/i18n/get-locale';
+import Subtitle from './Subtitle.astro';
+import AchievementCard from './AchievementCard';
+
+interface Props {
+  achievements: { description: string; icon: string }[];
+}
+
+const { achievements } = Astro.props;
+const { t } = init(Astro.url);
+---
+
+{
+  achievements && achievements.length > 0 && (
+    <div class="mt-14 lap:mt-[64px] xl:mt-[72px]  lg:mt-20 relative pb-16">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-full bg-accent-700-light dark:bg-accent-700-dark -z-10" />
+
+      <Subtitle
+        className="text-white dark:text-primary-dark"
+        text={t('departments.notableAchievements')}
+      />
+      <div class=" pt-4 grid grid-cols-1 gap-2 lap:grid-cols-4 md:gap-3 lap:gap-4 lg:gap-6">
+        {achievements.map(({ description, icon }, index) => (
+          <AchievementCard
+            description={description}
+            icon={icon}
+            className={index === 5 ? 'lap:col-span-2' : ''}
+            client:only
+          />
+        ))}
+      </div>
+    </div>
+  )
+}

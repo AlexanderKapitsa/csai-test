@@ -1,0 +1,186 @@
+---
+import MainLayout from './MainLayout.astro';
+import CentralPanel from '@comp/Shared/CentralPanel.astro';
+import BasicPageHeader from '@comp/Shared/BasicPageHeader.astro';
+import BasicMobilePageHeader from '@comp/Shared/BasicMobilePageHeader.astro';
+import PageNotFound from '@comp/Shared/PageNotFound.astro';
+import { init, getLocale } from '@utils/i18n/get-locale.js';
+
+// Сторінка НЕ доступна за замовчуванням. Показуємо лише якщо в .env явно вказано 'true'
+const showElectives =
+  String(import.meta.env.PUBLIC_SHOW_ELECTIVE_COMPONENTS ?? '')
+    .trim()
+    .toLowerCase() === 'true';
+
+
+const { t } = init(Astro.url);
+const locale = getLocale(Astro.url);
+
+const { frontmatter } = Astro.props;
+
+interface DepartmentFrontmatter {
+  title: string;
+  mtitle?: string;
+  subPath?: string;
+}
+
+interface AnnotationFile {
+  fileName: string;
+  fileLink: string;
+}
+
+interface RawComponentItem {
+  name: string;
+  teacher?: string;
+  department?: string | string[];
+  semester?: string | number;
+  credits?: string | number;
+  annotations?: AnnotationFile[];
+}
+
+const departmentModules = import.meta.glob<{
+  frontmatter: DepartmentFrontmatter;
+}>('/src/pages/departments/*/*.mdx', { eager: true });
+
+function resolveDepartmentTitle(deptRef: unknown): string {
+  if (!deptRef || typeof deptRef !== 'string') return (deptRef as string) || '';
+
+  if (deptRef.includes('.mdx')) {
+    const deptSlug = deptRef
+      .split('/')
+      .pop()
+      ?.replace(/\.mdx$/, '');
+
+    if (deptSlug) {
+      const targetPath = `/departments/${locale}/${deptSlug}.mdx`;
+      const matchedEntry = Object.entries(departmentModules).find(
+        ([filePath]) => filePath.endsWith(targetPath)
+      );
+
+      if (matchedEntry) {
+        return (
+          matchedEntry[1].frontmatter.title ||
+          matchedEntry[1].frontmatter.mtitle ||
+          deptRef
+        );
+      }
+    }
+  }
+
+  return deptRef;
+}
+
+const rawComponents: RawComponentItem[] = frontmatter?.components || [];
+
+const components = rawComponents.map((item: RawComponentItem) => ({
+  ...item,
+  department: Array.isArray(item.department)
+    ? item.department.map(resolveDepartmentTitle).join(', ')
+    : resolveDepartmentTitle(item.department),
+}));
+---
+
+{
+  showElectives ? (
+    <MainLayout pageTitle={frontmatter.title}>
+      <CentralPanel>
+        <div class="w-full xl:max-w-[1300px] mx-auto px-2 sm:px-4">
+          <BasicPageHeader title={frontmatter.title} />
+          <BasicMobilePageHeader title={frontmatter.title} />
+
+          <div class="mt-4 md:mt-6 w-full overflow-x-auto border-2 border-primary-light dark:border-primary-dark rounded-md shadow-sm">
+            <table class="border-hidden border-collapse bg-background-light dark:bg-background-dark w-full min-w-[640px] lap:min-w-full text-left text-[11px] sm:text-xs md:text-sm lap:text-base">
+              <thead>
+                <tr class="border-2 border-primary-light dark:border-primary-dark bg-secondary-400-light dark:bg-primary-dark dark:text-primary-light">
+                  <th class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark text-center font-bold w-[40px] md:w-[50px]">
+                    {t('selectiveComponentsTable.number')}
+                  </th>
+                  <th class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark font-bold min-w-[140px]">
+                    {t('selectiveComponentsTable.title')}
+                  </th>
+                  <th class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark font-bold min-w-[120px]">
+                    {t('selectiveComponentsTable.teacher')}
+                  </th>
+                  <th class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark font-bold min-w-[120px]">
+                    {t('selectiveComponentsTable.department')}
+                  </th>
+                  <th class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark text-center font-bold min-w-[65px]">
+                    {t('selectiveComponentsTable.semester')}
+                  </th>
+                  <th class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark text-center font-bold min-w-[65px]">
+                    {t('selectiveComponentsTable.credits')}
+                  </th>
+                  <th class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark font-bold min-w-[120px]">
+                    {t('selectiveComponentsTable.annotation')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {components.length > 0 ? (
+                  components.map((item: RawComponentItem, index: number) => (
+                    <tr class="border-2 border-primary-light dark:border-primary-dark">
+                      <td class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark text-center font-semibold">
+                        {index + 1}
+                      </td>
+
+                      <td class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark font-medium leading-snug">
+                        {item.name}
+                      </td>
+
+                      <td class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark leading-snug">
+                        {item.teacher}
+                      </td>
+
+                      <td class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark leading-snug">
+                        {item.department}
+                      </td>
+
+                      <td class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark text-center">
+                        {item.semester}
+                      </td>
+
+                      <td class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark text-center">
+                        {item.credits}
+                      </td>
+
+                      <td class="py-2 px-2 md:py-3 md:px-4 border-2 border-primary-light dark:border-primary-dark">
+                        {item.annotations && item.annotations.length > 0 ? (
+                          <ul class="list-disc list-inside space-y-1">
+                            {item.annotations.map((file: AnnotationFile) => (
+                              <li>
+                                <a
+                                  href={file.fileLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  class="text-accent-700-light dark:text-secondary-300-dark hover:underline break-words"
+                                >
+                                  {file.fileName}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span class="opacity-50">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr class="border-2 border-primary-light dark:border-primary-dark">
+                    <td colspan="7" class="py-6 text-center opacity-60">
+                      {t('selectiveComponentsTable.emptyList')}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </CentralPanel>
+    </MainLayout>
+  ) : (
+    <MainLayout pageTitle={t('pageNotFound.title')}>
+      <PageNotFound />
+    </MainLayout>
+  )
+}

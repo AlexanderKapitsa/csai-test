@@ -1,0 +1,125 @@
+---
+import { Picture } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import Image from '../assets/rabbit.png';
+import DateFormatter from '../utils/date-formatter.js';
+import getOnlyBodyTextFromMarkdownContent from '../utils/strip-markdown.js';
+import * as fs from 'node:fs/promises';
+
+const AMOUNT_OF_LINES_DESCRIPTION = 3;
+const MAX_LENGTH_OF_VISIBLE_DESCRIPTION_IN_SYMBOLS = 500;
+
+const { data, t } = Astro.props;
+const { frontmatter: { href, title, src, alt, category, createdAt }, url, file } = data;
+const date = DateFormatter.formatShortDate(createdAt);
+const translatedCategory = t(`news.categories.${category}`);
+
+const description = await buildNewsDescription(file);
+
+let actualSrc;
+
+if (src) {
+  actualSrc = src.replaceAll('../../', '../');
+}
+
+const images = import.meta.glob<{
+  default: ImageMetadata
+}>('../assets/*.{jpeg,jpg,png,webp,avif,gif,svg,JPEG,JPG,PNG,WEBP,AVIF,GIF,SVG}');
+
+async function buildNewsDescription(filePath) {
+  let content = await fetchFileContentByPath(filePath);
+  content = await getOnlyBodyTextFromMarkdownContent(content);
+
+  content = stripNewLines(content);
+
+  const isTooMuchLines = getLinesCount(content) > AMOUNT_OF_LINES_DESCRIPTION + 1;
+
+  if (isTooMuchLines) {
+    content = remainLinesOfAmount(content, AMOUNT_OF_LINES_DESCRIPTION);
+  }
+
+  content = stripStringToLengthOf(content, MAX_LENGTH_OF_VISIBLE_DESCRIPTION_IN_SYMBOLS);
+
+  return content;
+}
+
+async function fetchFileContentByPath(path) {
+  return await fs.readFile(path, { encoding: 'utf-8' });
+}
+
+function stripNewLines(str) {
+  return String(str).replace(/\n\n/g, '\n');
+}
+
+function stripStringToLengthOf(str, length) {
+  return str.slice(0, length);
+}
+
+function getLinesCount(str) {
+  return str.split('\n').length;
+}
+
+function remainLinesOfAmount(str, amount) {
+  if (typeof str !== 'string') {
+    throw new Error(`String is expected, but ${typeof str} is given`);
+  }
+
+  if (amount < 0) {
+    throw new Error('A negative amount is given');
+  }
+
+  const firstLines = str.split('\n').slice(0, amount).join('\n');
+  const firstLinesAndEllipsis = firstLines + '…';
+
+  return firstLinesAndEllipsis;
+}
+---
+
+<!--  -->
+<a
+  href={url}
+  class="flex flex-col gap-3 md:gap-4 lap:gap-5 lg:gap-6 pt-5 pb-2 px-3  md:p-6 md:pb-3 lap:p-8 lap:pb-4 text-background-dark dark:text-background-light xl:p-10 xl:pb-5">
+  <span class="flex gap-3 md:gap-6 lap:gap-8 lg:gap-12">
+    <span
+      class="news_image dark:border-primary-dark border-secondary-400-dark size-24 md:size-32 lap:size-40 lg:size-48 shrink-0 rounded-xl overflow-hidden">
+      {src &&
+        <Picture src={images[actualSrc]()} alt={alt}
+                formats={['avif', 'webp']}
+                style="aspect-ratio: 1"
+                quality="high"
+                width={375} height={375}
+                densities={[1, 1.5, 2, 3]}
+                class="object-cover object-center"
+        />}
+      {!src &&
+        <span
+          class="relative flex items-center justify-center w-[96px] h-[96px] md:w-[128px] md:h-[128px] lap:w-[160px] lap:h-[160px] lg:w-[192px] lg:h-[192px] bg-background-light dark:bg-background-dark rounded-md">
+          <Icon name="placeholder-logo"
+                class="absolute top-1/2 left-1/2 text-background-dark dark:text-background-light -translate-x-1/2 -translate-y-1/2 w-16 md:w-20 lap:w-22 lg:w-24 h-16 md:h-20 lap:h-22 lg:h-24 opacity-1" />
+        </span>}
+    </span>
+
+    <span class="flex grow flex-col gap-2 md:gap-3 lap:gap-4 lg:gap-6">
+      <span class="text-base md:text-xl lap:text-2xl xl:text-3xl lg:text-4xl line-clamp-3 xl:line-clamp-2 text-background-dark dark:text-white">{title}</span>
+      <span class="text-xs md:text-sm lap:text-base xl:text-[17px] xl:leading-6 lg:text-lg line-clamp-3 text-background-dark dark:text-white">
+        {description}
+      </span>
+    </span>
+  </span>
+
+  <span class="flex justify-between text-background-dark dark:text-white">
+    <span
+      class="inline-block w-24 md:w-32 lap:w-40 lg:w-48 text-center text-[10px] md:text-sm lap:text-lg lg:text-xl"
+    >{date}</span>
+    <span class="max-lg:mr-2 text-xs md:text-sm lap:text-base xl:text-lg lg:text-xl capitalize">{translatedCategory}</span>
+  </span>
+</a>
+
+<style>
+  .news_image {
+    border-width: 3px;
+    @media (max-width: 431px) {
+      border-width: 0px;
+    }
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+import Portrait from './Portrait.astro';
+
+const { 
+  pictureSrc, 
+  name, 
+  position, 
+  slug, 
+  isPublished = false, 
+  lang = 'uk' 
+} = Astro.props;
+
+const teacherUrl = slug ? `/teachers/${lang}/${slug}` : null;
+const isClickable = isPublished && Boolean(teacherUrl);
+---
+
+{isClickable ? (
+  <a 
+    href={teacherUrl} 
+    class="group block transition-transform duration-200 hover:scale-[1.02]"
+  >
+    <article class="flex flex-col items-center gap-2 lg:gap-4 max-w-[320px] lg:max-w-[340px] min-h-[55px] text-center">
+      <Portrait
+        pictureSrc={pictureSrc}
+        throwErrorOnNoPicFound={false}
+
+        widthMobile={160}
+        heightMobile={220}
+
+        widthMd={200}
+        heightMd={270}
+
+        widthLap={260}
+        heightLap={330}
+
+        widthXl={300}
+        heightXl={390}
+
+        widthDesktop={340}
+        heightDesktop={430}
+      />
+
+      <div class="flex flex-col items-center gap-1 dark:text-primary-dark text-primary-light whitespace-normal">
+        <div class="relative w-[250px] md:w-[230px] lap:w-[350px] text-sm md:text-base lap:text-lg xl:text-xl lg:text-xl">
+          <h3 class="group-hover:underline">{name}</h3>
+        </div>
+        <h4 class="w-[220px] md:w-[220px] lap:w-[310px] lg:w-[340px] text-center text-xs md:text-sm lap:text-base xl:text-lg lg:text-lg">{position}</h4>
+      </div>
+    </article>
+  </a>
+) : (
+  <article class="flex flex-col items-center gap-2 lg:gap-4 max-w-[320px] lg:max-w-[340px] min-h-[55px] text-center">
+    <Portrait
+      pictureSrc={pictureSrc}
+      throwErrorOnNoPicFound={false}
+
+      widthMobile={160}
+      heightMobile={220}
+
+      widthMd={200}
+      heightMd={270}
+
+      widthLap={260}
+      heightLap={330}
+
+      widthXl={300}
+      heightXl={390}
+
+      widthDesktop={340}
+      heightDesktop={430}
+    />
+
+    <div class="flex flex-col items-center gap-1 dark:text-primary-dark text-primary-light whitespace-normal">
+      <div class="relative w-[250px] md:w-[230px] lap:w-[350px] text-sm md:text-base lap:text-lg xl:text-xl lg:text-xl">
+        <h3>{name}</h3>
+      </div>
+      <h4 class="w-[220px] md:w-[220px] lap:w-[310px] lg:w-[340px] text-center text-xs md:text-sm lap:text-base xl:text-lg lg:text-lg">{position}</h4>
+    </div>
+  </article>
+)}

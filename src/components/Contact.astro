@@ -1,0 +1,93 @@
+---
+const { title, phones, emails, telegrams } = Astro.props;
+import { init } from '@utils/i18n/get-locale.js';
+import isEmpty from 'lodash/isEmpty';
+
+const { t } = init(Astro.url);
+---
+
+<div class="md:mt-4 lap:mt-6 xl:mt-8 lg:mt-10 mt-2">
+  <h3
+    class="text-primary-light dark:text-primary-dark lap:w-full lg:text-4xl text-xl mt-1.5"
+  >
+    {title}
+  </h3>
+  <div>
+    <ul
+      class="flex flex-col gap-2 lap:gap-4 dark:text-background-light lap:w-full md:text-lg lap:text-xl xl:text-2xl lg:text-3xl whitespace-nowrap text-sm mt-3 lap:mt-6"
+    >
+      {
+        emails.map((email, index) => (
+          <li>
+            <>
+              <span
+                class="inline-block w-20 md:w-28 lap:w-36 xl:w-40 lg:w-48"
+                style={`${index > 0 && 'opacity:0;user-select:none'}`}
+              >
+                {emails.length > 1
+                  ? `${t('contacts.emails')}:`
+                  : `${t('contacts.email')}:`}
+              </span>
+              <span class="email">
+                <a
+                  href={`mailto:${email}`}
+                  class="text-secondary-400-dark dark:text-primary-dark hover:underline"
+                >
+                  {email}
+                </a>
+              </span>
+            </>
+          </li>
+        ))
+      }
+    </ul>
+    <ul
+      class="flex flex-col gap-2 lg:gap-4 dark:text-background-light lap:w-full md:text-lg lap:text-xl xl:text-2xl lg:text-3xl lap:mt-4 whitespace-nowrap text-sm mt-1.5"
+    >
+      {
+        phones.map((phone, index) => (
+          <li>
+            <>
+              <span
+                class="inline-block w-20 md:w-28 lap:w-36 xl:w-40 lg:w-48"
+                style={`${index > 0 && 'opacity:0;user-select:none'}`}
+              >
+                {phones.length > 1
+                  ? `${t('contacts.phones')}:`
+                  : `${t('contacts.phone')}:`}
+              </span>
+              <span class="text-secondary-400-dark dark:text-primary-dark ">
+                <a class="hover:underline" href={`tel:${phone}`}>
+                  {phone}
+                </a>
+              </span>
+            </>
+          </li>
+        ))
+      }
+    </ul>
+    <ul
+      class="flex flex-col gap-2 lg:gap-4 dark:text-background-light lap:w-full md:text-lg lap:text-xl xl:text-2xl lg:text-3xl lap:mt-4 whitespace-nowrap text-sm mt-1.5"
+    >
+      {
+        !isEmpty(telegrams) && telegrams.map((telegram, index) => (
+          <li>
+            <>
+              <span
+                class="inline-block w-20 md:w-28 lap:w-36 xl:w-40 lg:w-48"
+                style={`${index > 0 && 'opacity:0;user-select:none'}`}
+              >
+                {`${t('contacts.telegram')}:`}
+              </span>
+              <span class="text-secondary-400-dark dark:text-primary-dark ">
+                <a class="hover:underline" href={telegram}>
+                  {telegram}
+                </a>
+              </span>
+            </>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+---
+import { getLocale, getLocaleUrl } from '@utils/i18n/get-locale.js';
+
+const locale = getLocale(Astro.url);
+const targetLocale = locale === 'uk' ? 'en' : 'uk';
+const switchUrl = getLocaleUrl(Astro.url.pathname, targetLocale);
+---
+
+<a
+  href={`/${switchUrl}`}
+  class="px-3 py-2 text-2xl"
+  data-lang-switch={targetLocale}
+>
+  {targetLocale.toUpperCase()}
+</a>

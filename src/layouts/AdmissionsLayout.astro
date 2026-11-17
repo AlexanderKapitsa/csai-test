@@ -1,0 +1,65 @@
+---
+import MainLayout from './MainLayout.astro';
+import AdmissionResInst from '@comp/AdmissionResInst.astro';
+import StageList from '@comp/StageList.astro';
+import ActionButton from '@comp/ActionButton.astro';
+import SubtitleOutlined from '@comp/SubtitleOutlined.astro';
+import Table from '@comp/NewsCustomComponents/Table.astro';
+import Subtitle from '@comp/Subtitle.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+
+const { frontmatter } = Astro.props;
+---
+
+<MainLayout pageTitle={`${frontmatter.level} | ${t('titles.admissions')}`}>
+  <div class="w-full" data-pagefind-body>
+    <AdmissionResInst
+      title={frontmatter.level}
+      description={frontmatter.description}
+      pictureSrc={frontmatter.frontPicture}
+    />
+    <div class="mb-12 xl:mb-24 space-y-8 xl:space-y-16">
+      {
+        frontmatter.entryInfo.map((entry) => {
+          let componentToRender;
+
+          switch (entry._template) {
+            case 'Subtitle':
+              componentToRender = <Subtitle text={entry.text} />;
+              break;
+            case 'Table':
+              componentToRender = (
+                <Table subtitle={entry.subtitle} data={entry.data} />
+              );
+              break;
+            default:
+              throw new Error(`Unknown _template type: ${entry._template}`);
+          }
+
+          return componentToRender;
+        })
+      }
+    </div>
+    {
+      frontmatter.steps && (
+        <>
+          <SubtitleOutlined text=`${t('admissions.way')}` />
+          <StageList steps={frontmatter.steps} t={t} />
+        </>
+      )
+    }
+
+    {
+      frontmatter.documentLink && frontmatter.documentLink.length > 0 && (
+        <div class="w-max mx-auto">
+          <ActionButton
+            title={t('admissions.buttonDocs')}
+            href={frontmatter.documentLink}
+          />
+        </div>
+      )
+    }
+  </div>
+</MainLayout>

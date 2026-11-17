@@ -1,0 +1,15 @@
+---
+import Pagination from '@philnash/astro-pagination';
+const { page, baseUrl, urlPattern } = Astro.props;
+---
+
+<Pagination page={page}
+            urlPattern={urlPattern}
+            previousLabel={'«'}
+            nextLabel={'»'}
+            windowSize={3}
+            firstPageUrl={`${baseUrl}/1`} />
+
+<style>
+
+</style>

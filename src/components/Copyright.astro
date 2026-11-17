@@ -1,0 +1,11 @@
+---
+import { Icon } from 'astro-icon/components';
+const { text } = Astro.props;
+---
+
+<div
+  class="flex items-center gap-2 text-xs fill-secondary-400-dark dark:fill-primary-dark  text-xs md:gap-3 md:text-base  xl:text-lg lg:text-xl lg:gap-4   " >
+  <Icon name="copyright" />
+  <p>{text}</p>
+</div>
+

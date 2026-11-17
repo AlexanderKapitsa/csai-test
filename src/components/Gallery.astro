@@ -1,0 +1,58 @@
+---
+import orderBy from 'lodash.orderby';
+import '../../public/lib/swiper.min.css';
+
+import GalleryCard from './GalleryCard.astro';
+import Subtitle from './Subtitle.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t, lang } = init(Astro.url);
+const {
+  people = [],
+  showTitle = true,   
+  sortPeople = true   
+} = Astro.props;
+
+const sortedPeople = sortPeople
+  ? orderBy(people, [(p) => p.createdAt], ['desc'])
+  : people;
+---
+
+{people && people.length > 0 && (
+  <section class={`mt-[34px] xl:mt-[60px]`}>
+    <div>
+      {showTitle && (
+        <>
+          <!-- Mobile version -->
+          <div class="lg:hidden">
+            <Subtitle text={`${t("departments.staff")}`} />
+          </div>
+
+          <!-- Desktop version -->
+          <div class="lg:flex lg:justify-between lg:items-center hidden">
+            <Subtitle text={`${t("departments.staff")}`} />
+          </div>
+        </>
+      )}
+
+      {sortedPeople.length > 0 && (
+        <ul class="grid gap-6 sm:gap-8 md:gap-24 lap:gap-12 xl:gap-6 grid-cols-1 md:grid-cols-3 lap:grid-cols-3 justify-items-center">
+          {sortedPeople.map(({ frontPicture, position, name, slug, isPublished }) => (
+            <li class="flex text-background-light dark:text-background-dark rounded-lg">
+              <GalleryCard
+                pictureSrc={frontPicture}
+                position={position}
+                name={name}
+                slug={slug}
+                isPublished={isPublished}
+                lang={lang}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {people.length === 0 && <p>Немає співробітників</p>}
+    </div>
+  </section>
+)}

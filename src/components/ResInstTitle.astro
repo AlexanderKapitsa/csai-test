@@ -1,0 +1,10 @@
+---
+const { titleParts } = Astro.props;
+---
+
+<h1 class="flex flex-col gap-1 lg:gap-4 min-w-full
+  text-2xl md:text-[27px] md:leading-[2rem] lap:text-4xl xl:text-[42px] xl:leading-[3rem] lg:text-5xl uppercase"
+  data-pagefind-meta="title"
+  >
+  {titleParts.map((title) => <span>{title}</span>)}
+</h1>

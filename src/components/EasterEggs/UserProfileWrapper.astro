@@ -1,0 +1,28 @@
+---
+import UserProfile from './UserProfile.jsx';
+import Subtitle from '../Subtitle.astro';
+---
+
+<div
+  id="user-profile"
+  class="hidden fixed top-0 left-0 w-full h-full bg-[#00000010]"
+>
+  <div
+    id="user-profile-content"
+    class="overflow-auto absolute top-[50%] left-[50%] flex flex-col gap-4 lg:gap-8 w-full h-full lg:w-[1200px] xl:w-[1100px] xl:h-[600px] p-4 xl:px-16 xl:py-8 xl:pt-0 border-2 border-background-light dark:border-primary-light xl:border-secondary-400-dark dark:xl:border-primary-dark bg-background-light dark:bg-primary-light xl:rounded-md -translate-x-1/2 -translate-y-1/2"
+  >
+    <Subtitle text="Мої досягнення" />
+    <UserProfile client:only="preact" />
+
+    <button
+      id="user-profile-close-btn"
+      class="absolute size-8 xl:size-10 lg:size-12 top-4 right-4 text-secondary-400-dark dark:text-primary-dark border-secondary-400-dark dark:border-primary-dark font-mono whitespace-normal border rounded-full leading-none"
+    >
+      x
+    </button>
+  </div>
+</div>
+
+<script>
+  import UserModalOperator from '@utils/modal-operators/user-modal-operator.js';
+</script>

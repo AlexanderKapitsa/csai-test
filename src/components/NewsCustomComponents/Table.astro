@@ -1,0 +1,118 @@
+---
+import { init } from "@utils/i18n/get-locale";
+
+let { subtitle, data } = Astro.props;
+
+if (!data || !data.length) {
+  throw new Error();
+}
+
+try {
+  data = JSON.parse(data);
+} catch {
+  throw new Error();
+}
+
+const { table, isFirstRowHeader, isFirstColumnHeader } = data;
+
+const id = crypto.randomUUID();
+
+const { t } = init(Astro.url);
+
+const TABLE_CAPTION = `${t("admissions.table")}: ${subtitle}`;
+---
+
+{table.length !== 0 &&
+<figure>
+  <figcaption class="mt-0 !mb-4 md:text-lg lap:text-xl xl:text-2xl top-figcaption leading-none">
+    {TABLE_CAPTION}
+  </figcaption>
+  <div class="w-fit border-2 border-primary-light dark:border-primary-dark rounded-md text-[11px] md:text-lg overflow-hidden"
+       id={id}>
+    <table
+      class="border-hidden border-collapse bg-background-light dark:bg-background-dark"
+    >
+      <tbody>
+      {table.map((row, rowIndex) => {
+        return (
+          <tr class="border-2 border-primary-light dark:border-primary-dark">
+            {row.cells.map((cell, columnIndex) => {
+              const isRowAccent = rowIndex === 0 && isFirstRowHeader;
+              const isColumnAccent = columnIndex === 0 && isFirstColumnHeader;
+              const shouldApplyAccent = isRowAccent || isColumnAccent;
+
+              return (
+                <td
+                  class=`xl:text-lg px-4 xl:px-8 py-3 xl:py-6 border-2 border-primary-light dark:border-primary-dark ${shouldApplyAccent ? 'bg-secondary-400-light dark:bg-primary-dark dark:text-primary-light dark:border-primary-light' : ''}`>
+                  {cell.content}
+                </td>
+              );
+            })}
+          </tr>
+        );
+      })}
+      </tbody>
+    </table>
+    <script define:vars={{ id }}>
+      (() => {
+        const MAX_TABLE_WIDTH_ON_MOBILE = 312;
+        const MAX_TABLE_WIDTH_ON_DESKTOP = 1300;
+        const DESKTOP_MAIN_WIDTH = 768;
+
+        const containerRef = document.getElementById(id);
+        const originalContainerWidth = {
+          value: containerRef.clientWidth,
+        };
+
+        const changeZoomWrapper = (originalWidth) => {
+          const isDesktop = window.screen.width >= DESKTOP_MAIN_WIDTH;
+
+          let widthConstrain;
+
+          if (isDesktop) {
+            widthConstrain = MAX_TABLE_WIDTH_ON_DESKTOP;
+          } else {
+            widthConstrain = MAX_TABLE_WIDTH_ON_MOBILE;
+          }
+
+          const widthWithoutZoom = containerRef.getBoundingClientRect().width / getZoom(containerRef);
+
+          if (widthWithoutZoom <= widthConstrain) {
+            setZoom(containerRef, 1);
+            return;
+          }
+
+          changeZoom(containerRef, originalWidth, widthConstrain);
+        };
+
+        changeZoomWrapper(originalContainerWidth);
+
+        window.addEventListener('resize', () => {
+          changeZoomWrapper(originalContainerWidth);
+        });
+
+        function changeZoom(container, originalWidth, maxWidth) {
+          const isCurrentlySmall = originalWidth.value <= maxWidth;
+          const currentZoom = getZoom(container) || 1;
+
+          if (currentZoom === 1 && isCurrentlySmall) {
+            return;
+          }
+
+          let zoomMultiplier = maxWidth / originalWidth.value;
+          setZoom(container, zoomMultiplier);
+        }
+
+        function getZoom(container) {
+          const value = container.style.getPropertyValue('zoom');
+
+          return Number(value);
+        }
+
+        function setZoom(container, value) {
+          container.style.setProperty('zoom', String(value));
+        }
+      })();
+    </script>
+  </div>
+</figure>}

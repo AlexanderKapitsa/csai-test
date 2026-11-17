@@ -1,0 +1,21 @@
+---
+export async function getStaticPaths() {
+  const teachers = await Astro.glob('../**/*.mdx');
+
+  return teachers.map((teacher) => {
+    const pathParts = teacher.file.split('/');
+    const fileName = pathParts.pop() || '';
+    const slug = fileName.replace('.mdx', '');
+    const lang = pathParts.pop() || 'uk';
+
+    return {
+      params: { lang, slug },
+      props: { Content: teacher.Content },
+    };
+  });
+}
+
+const { Content } = Astro.props;
+---
+
+<Content />

@@ -1,0 +1,65 @@
+---
+import TagsList from './TagsList.astro';
+import { getNewsCategories } from '../data/news-categories';
+import { init, getLocale } from '@utils/i18n/get-locale';
+import { getHeaderRoutesConfig } from '../data/header-routes';
+import { HeaderSections } from 'src/enums/header-sections-enum';
+import { IRouteConfig } from 'src/interfaces/data/route-config';
+
+const { t } = init(Astro.url);
+const locale = getLocale(Astro.url);
+const routes = getHeaderRoutesConfig(locale, t);
+
+const departments = routes[HeaderSections.DEPARTMENTS].sublist;
+
+const { frontmatter } = Astro.props;
+
+const newsCategories = getNewsCategories(locale, t);
+const tags = createTagsList(frontmatter);
+
+function createTagsList(frontmatter) {
+  let tags = [];
+
+  const { category, department } = frontmatter;
+
+  tags = addCategories(tags, newsCategories, category);
+  tags = addDepartment(tags, departments, department);
+
+  return tags;
+
+  function addCategories(tags, categories, currentCategory) {
+    tags = [...tags];
+
+    categories.map(({ baseUrl, title }) => {
+      if (baseUrl.includes(currentCategory)) {
+        tags.push({
+          baseUrl: `${baseUrl}/1`,
+          title,
+        });
+      }
+    });
+
+    return tags;
+  }
+
+  function addDepartment(tags, departments: IRouteConfig[], department) {
+    if (!department) {
+      return tags;
+    }
+
+    tags = [...tags];
+    const match = departments.find(({ title }) => t(department) === title);
+    if (!match) return tags;
+
+    tags.push({
+      baseUrl: match.href,
+      title: `${match.title}`,
+    });
+
+    return tags;
+  }
+}
+---
+
+{tags && tags.length > 0 && <TagsList t={t} tags={tags} />}
+{tags && tags.length === 0 && <p>{t('tags.noTags')}</p>}

@@ -1,0 +1,20 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import ResInstFaculty from '@comp/ResInstFaculty.astro';
+import DepartmentProfileList from '@comp/DepartmentProfileList.astro';
+import Subtitle from '@comp/Subtitle.astro';
+import ProjectsList from '@comp/ProjectsList.astro';
+import Honeycomb from '@comp/Honeycomb.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+---
+
+<MainLayout pageTitle=`${t("titles.aboutNNI")}`>
+  <ResInstFaculty />
+  <ProjectsList />
+  <Subtitle text=`${t("common.cooperation")}` />
+  <Honeycomb />
+  <Subtitle text=`${t("faculty.directorate")}` />
+  <DepartmentProfileList />
+</MainLayout>

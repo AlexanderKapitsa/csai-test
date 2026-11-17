@@ -1,0 +1,10 @@
+---
+const { text, centered } = Astro.props;
+---
+
+<div class={'flex max-lap:justify-center ' + (centered ? 'justify-center' : '')}>
+  <h2
+    class="text-background-dark dark:text-white border-4 border-background-dark dark:border-primary-dark whitespace-nowrap md:text-2xl lap:text-3xl xl:text-4xl lg:text-5xl lg:h-22 lap:py-3 xl:py-4 lap:px-8 xl:px-10 lg:px-12 text-xl py-2 px-4 inline-block rounded-full select-none">
+    {text}
+  </h2>
+</div>

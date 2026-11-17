@@ -1,0 +1,16 @@
+---
+import BasicLongTextParagraph from '@comp/Shared/BasicLongTextParagraph.astro';
+import SmallSectionHeader from '@comp/Shared/SmallSectionHeader.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+
+const { title, description, link, linkLabel } = Astro.props;
+---
+
+<SmallSectionHeader label={title} />
+<BasicLongTextParagraph className="mb-2 lap:mb-4 xl:mb-6 lg:mb-8"
+  >{description}&nbsp;
+  <a href={link} class="underline" target="_blank">{linkLabel}</a
+  ></BasicLongTextParagraph
+>

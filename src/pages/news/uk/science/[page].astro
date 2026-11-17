@@ -1,0 +1,17 @@
+---
+import NewsPageTemplate from '@comp/NewsPageTemplate.astro';
+import { getLocale } from '@utils/i18n/get-locale';
+
+const locale = getLocale(Astro.url);
+import { getPaginatedNews } from '@utils/i18n/getPaginatedNews';
+
+export async function getStaticPaths({ paginate }) {
+  let newsPages = await Astro.glob('../*.mdx');
+
+  return getPaginatedNews('science', paginate, newsPages);
+}
+
+const { page } = Astro.props;
+---
+
+<NewsPageTemplate page={page} baseUrl={`/news/${locale}/science`} />

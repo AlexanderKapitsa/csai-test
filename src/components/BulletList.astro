@@ -1,0 +1,29 @@
+---
+import { init } from '@utils/i18n/get-locale';
+import Subtitle from './Subtitle.astro';
+import { marked } from 'marked';
+
+interface Props {
+  title: string;
+  items: { title: string }[] | undefined;
+}
+
+const { items, title } = Astro.props;
+const { t } = init(Astro.url);
+---
+
+{
+  items && items.length > 0 && (
+    <div class="mt-14 lap:mt-[64px] xl:mt-[72px] lg:mt-20">
+      <Subtitle text={`${t(title)}`} />
+      <div class="flex flex-col gap-7">
+        {items.map(({ title }) => (
+          <div class="flex items-center gap-6 text-xs md:text-base lap:text-lg xl:text-xl lg:text-2xl">
+            <span class="flex-shrink-0 size-2 xl:size-3 rounded-full bg-secondary-300-dark dark:bg-primary-dark" />
+            <p set:html={marked.parse(title)}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

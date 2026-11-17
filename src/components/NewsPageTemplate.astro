@@ -1,0 +1,38 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import MyPagination from './MyPagination.astro';
+import NewsCategories from './NewsCategories.astro';
+import NewsList from './NewsList.astro';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+const PAGE_SIZE = 4;
+
+const { page, baseUrl } = Astro.props;
+
+const shouldShowPagination = page.total >= PAGE_SIZE;
+---
+
+<MainLayout
+  pageTitle={`${t('news.news')} | ${t('news.page')} ${page.currentPage}`}
+>
+  <h2
+    class="text-primary-light dark:text-primary-dark lg:mt-11 md:text-3xl lap:text-4xl xl:text-5xl lg:text-6xl text-2xl my-8 text-center"
+  >
+    {t('news.news')}
+  </h2>
+  <NewsCategories />
+  <div class="flex flex-col gap-4 lg:gap-8  lap:pl-10 xl:ml-12">
+    {page.data.length === 0 && <p>Новини за цією категорією не знайдено.</p>}
+    {page.data.length > 0 && <NewsList items={page.data} t={t} />}
+    {
+      shouldShowPagination && (
+        <MyPagination
+          page={page}
+          baseUrl={baseUrl}
+          urlPattern={`${baseUrl}/{}`}
+        />
+      )
+    }
+  </div>
+</MainLayout>

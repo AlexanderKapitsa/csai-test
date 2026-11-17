@@ -1,0 +1,89 @@
+---
+import { init } from '@utils/i18n/get-locale';
+import Subtitle from './Subtitle.astro';
+import { URL } from 'url';
+
+interface ContactInfo {
+  departmentEmail?: string;
+  departmentPhone?: string;
+  departmentAddress?: string;
+  departmentSite?: string;
+  headEmail?: string;
+  headPhone?: string;
+}
+
+interface Props {
+  frontmatter: {
+    title: string;
+    deanName: string;
+    contactInfo: ContactInfo;
+  };
+}
+
+const {
+  frontmatter: { title, deanName, contactInfo },
+} = Astro.props;
+const { t } = init(Astro.url);
+
+const hasDepartmentInfo =
+  contactInfo?.departmentEmail ||
+  contactInfo?.departmentPhone ||
+  contactInfo?.departmentAddress ||
+  contactInfo?.departmentSite;
+const hasHeadInfo = contactInfo?.headEmail || contactInfo?.headPhone;
+---
+
+{
+  (hasDepartmentInfo || hasHeadInfo) && (
+    <div class="mt-14 lap:mt-[64px] xl:mt-[72px] lg:mt-20">
+      <Subtitle text={`${t('departments.contactInfo')}`} />
+      <div class="flex text-xs flex-col lap:flex-row md:text-base lap:text-lg xl:text-xl lg:text-2xl">
+        {hasDepartmentInfo && (
+          <div class="basis-1/2 flex flex-col gap-5 mb-5 lap:mb-0">
+            <h3 class="font-semibold mb-2 text-sm md:text-lg lap:text-xl xl:text-2xl lg:text-3xl">{title}</h3>
+
+            {contactInfo.departmentEmail && (
+              <a href={`mailto:${contactInfo.departmentEmail}`}>
+                {contactInfo.departmentEmail}
+              </a>
+            )}
+            {contactInfo.departmentPhone && (
+              <a href={`tel:${contactInfo.departmentPhone}`}>
+                {contactInfo.departmentPhone}
+              </a>
+            )}
+            {contactInfo.departmentAddress && (
+              <p>{contactInfo.departmentAddress}</p>
+            )}
+            {contactInfo.departmentSite && (
+              <a
+                class="underline"
+                href={`${contactInfo.departmentSite}`}
+                target="_blank"
+              >
+                {new URL(contactInfo.departmentSite).hostname}
+              </a>
+            )}
+          </div>
+        )}
+
+        {hasHeadInfo && (
+          <div class="basis-1/2 flex flex-col gap-5 lap:text-right">
+            <h3 class="font-semibold mb-2 text-sm md:text-lg lap:text-xl xl:text-2xl lg:text-3xl">{deanName}</h3>
+
+            {contactInfo.headEmail && (
+              <a href={`mailto:${contactInfo.headEmail}`}>
+                {contactInfo.headEmail}
+              </a>
+            )}
+            {contactInfo.headPhone && (
+              <a href={`tel:${contactInfo.headPhone}`}>
+                {contactInfo.headPhone}
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

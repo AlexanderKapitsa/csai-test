@@ -1,0 +1,80 @@
+---
+import { Picture } from 'astro:assets';
+import { ConstrainedWidthResolver } from '@utils/dimension-constrainer';
+import ImageDimensionsGetter from '@utils/image-dimensions-getter.js';
+
+const { src, alt } = Astro.props;
+const [originalWidth, originalHeight] = await ImageDimensionsGetter.from(src);
+const isPortrait = originalHeight >= originalWidth;
+const MAX_DIMENSIONS = {
+  Mobile: {
+    width: 280,
+    height: 400,
+  },
+  Desktop: {
+    width: 720,
+    height: isPortrait ? 400 : 504,
+  },
+};
+
+const MINIMAL_WIDTH = {
+  Mobile: 100,
+  Desktop: 150,
+};
+
+const widthResolver = new ConstrainedWidthResolver({
+  maxDimensions: {
+    mobile: MAX_DIMENSIONS.Mobile,
+    desktop: MAX_DIMENSIONS.Desktop,
+  },
+});
+
+let { mobileWidth, desktopWidth } = await widthResolver.resolveFor(src);
+
+mobileWidth = widthNormalizerFor(MINIMAL_WIDTH.Mobile).normalize(mobileWidth);
+desktopWidth = widthNormalizerFor(MINIMAL_WIDTH.Desktop).normalize(
+  desktopWidth
+);
+
+const images = import.meta.glob<{
+  default: ImageMetadata;
+}>(
+  '../../assets/*.{jpeg,jpg,png,webp,avif,gif,svg,JPEG,JPG,PNG,WEBP,AVIF,GIF,SVG}'
+);
+
+function widthNormalizerFor(minWidth) {
+  return {
+    normalize(width) {
+      return width < minWidth ? minWidth : width;
+    },
+  };
+}
+
+const classes = `
+  object-cover object-center rounded-md
+  w-[284px] h-[216px]
+   md:h-[440px]
+  lap:w-[480px] lap:h-[460px]
+  xl:w-[500px] xl:h-[480px]
+   lg:h-[${isPortrait ? 400 : 504}px]
+`;
+
+const image = images[src]?.();
+---
+
+<figure class="flex flex-col items-center mx-auto">
+  {
+    image && (
+      <Picture
+        data-pagefind-meta="image[src]"
+        src={image}
+        alt={alt}
+        class={classes}
+        formats={['avif', 'webp']}
+        quality="high"
+        densities={[1, 1.5, 2, 3]}
+      />
+    )
+  }
+  {alt && <figcaption class="text-center">{alt}</figcaption>}
+</figure>

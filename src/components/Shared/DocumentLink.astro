@@ -1,0 +1,15 @@
+---
+const { href, label, openNewPage, classList = "" } = Astro.props;
+---
+
+<a
+  href={href}
+  target={openNewPage ? "_blank" : "_self"}
+  rel={openNewPage ? "noopener noreferrer" : undefined}
+  class:list={[
+    "block md:text-base lap:text-lg xl:text-xl lg:text-xl w-fit transition-colors duration-200",
+    classList,
+  ]}
+>
+  {label}
+</a>

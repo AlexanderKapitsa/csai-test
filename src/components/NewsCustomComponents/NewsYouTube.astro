@@ -1,0 +1,22 @@
+---
+import { YouTube } from '@astro-community/astro-embed-youtube';
+
+const { id, title } = Astro.props;
+
+const PRE_CAPTION = 'Відео з YouTube';
+
+const finalCaption = `${PRE_CAPTION}: ${title}`;
+---
+
+<figure
+  class="mx-auto w-[280px] lg:w-[720px]">
+  <div class="border-2 rounded-md border-secondary-400-dark dark:border-primary-dark overflow-hidden">
+    <YouTube id={id}
+             title={title}
+             posterQuality={'high'} />
+  </div>
+
+  <figcaption class="text-center">
+    {finalCaption}
+  </figcaption>
+</figure>

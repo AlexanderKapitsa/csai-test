@@ -1,0 +1,46 @@
+---
+const { title, size } = Astro.props;
+
+if (size !== 'sm' && size !== 'md') {
+  throw new Error(`Incorrect size: ${size};`);
+}
+
+let sizeClasses = '';
+
+if (size === 'sm') {
+  sizeClasses = `
+    text-xs
+    md:text-sm
+    lap:text-base
+    xl:text-lg
+    lg:text-lg
+    py-2 px-4
+    md:py-2.5 md:px-6
+    lap:py-3 lap:px-7
+    xl:py-4 xl:px-8
+    lg:py-4 lg:px-9
+  `;
+}
+
+if (size === 'md') {
+  sizeClasses = `
+    text-base
+    md:text-lg
+    lap:text-xl
+    xl:text-2xl
+    lg:text-3xl
+    py-2.5 px-5
+    md:py-3 md:px-7
+    lap:py-3.5 lap:px-8
+    xl:py-4 xl:px-10
+    lg:py-4 lg:px-12
+  `;
+}
+---
+
+<span
+  class={`${sizeClasses} inline-block rounded-full dark:bg-primary-dark bg-secondary-400-dark text-background-light select-none cursor-pointer shadow-hover`}
+>
+  {title}
+</span>
+

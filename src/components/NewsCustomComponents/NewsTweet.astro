@@ -1,0 +1,16 @@
+---
+import { Tweet } from '@astro-community/astro-embed-twitter';
+
+const { id, description } = Astro.props;
+
+const PRE_CAPTION = 'Пост у X';
+
+const finalCaption = `${PRE_CAPTION}: ${description}`;
+---
+
+<figure class="mx-auto w-[280px] lg:w-[720px]">
+  <Tweet id={id} />
+  <figcaption class="text-center">
+    {finalCaption}
+  </figcaption>
+</figure>

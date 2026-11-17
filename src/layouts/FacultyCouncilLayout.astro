@@ -1,0 +1,38 @@
+---
+import MainLayout from './MainLayout.astro';
+import CentralPanel from '@comp/Shared/CentralPanel.astro';
+import BasicPageHeader from '@comp/Shared/BasicPageHeader.astro';
+import BasicMobilePageHeader from '@comp/Shared/BasicMobilePageHeader.astro';
+import BasicParagraph from '@comp/Shared/BasicParagraph.astro';
+import AchievementsList from '@comp/AchievementsList.astro';
+import ResInstDepartment from '@comp/ResInstDepartment.astro';
+import Gallery from '@comp/Gallery.astro'; 
+import Cooperation from '@comp/Cooperation.astro';
+import BookletButton from '@comp/BookletButton.astro';
+import DepartmentsUrls from '@comp/DepartmentsUrls.astro';
+import DepartmentAboutInfo from '@comp/DepartmentAboutInfo.astro';
+import BulletList from '@comp/BulletList.astro';
+import DepartmentContactInfo from '@comp/DepartmentContactInfo.astro';
+import DepartmentGoals from '@comp/DepartmentGoals.astro';
+import DepartmentNotableAchievements from '@comp/DepartmentNotableAchievements.astro';
+import AlternatingBlocks from '@comp/AlternatingBlocks.astro';
+import LinkIcon from '../components/LinkIcon';
+
+const { frontmatter } = Astro.props;
+---
+
+<MainLayout pageTitle={frontmatter.title}>
+  <CentralPanel>
+    <div class="w-full xl:max-w-[800px]">
+      <BasicPageHeader title={frontmatter.title} />
+      <BasicMobilePageHeader title={frontmatter.mtitle} />
+      <BasicParagraph text={frontmatter.longAbout} skipCropLongText/>
+    </div>
+
+    <BookletButton url={frontmatter.presentationLink} />
+    <AchievementsList title={frontmatter.title} />
+    <Gallery people={frontmatter.gallery} showTitle={false} sortPeople={false} />
+    <DepartmentsUrls usefulLinks={frontmatter.usefulLinks} title={frontmatter.usefulLinksTitle} showIcon={frontmatter.showIcon}  />
+    <DepartmentContactInfo frontmatter={frontmatter} />
+  </CentralPanel>
+</MainLayout>

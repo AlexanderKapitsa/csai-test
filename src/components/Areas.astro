@@ -1,0 +1,45 @@
+---
+import AreasLink from './AreasLink.astro';
+import { init, getLocale } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+const locale = getLocale(Astro.url);
+
+interface DepartmentFrontmatter {
+  mtitle: string;
+  subPath: string;
+  order?: number;
+  isPublished?: boolean;
+  isShownInAreas?: boolean;
+}
+
+const departmentModules = import.meta.glob<{
+  frontmatter: DepartmentFrontmatter;
+}>('/src/pages/departments/*/*.mdx', { eager: true });
+
+const patternsCount = 4;
+const links = Object.entries(departmentModules)
+  .filter(([path]) => path.includes(`/departments/${locale}/`))
+  .map(([, mod]) => mod.frontmatter)
+  .filter(
+    (frontmatter) =>
+      frontmatter.isPublished && frontmatter.isShownInAreas
+  )
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+  .map((frontmatter, i) => ({
+    title: frontmatter.mtitle,
+    href: `departments/${locale}/${frontmatter.subPath}`,
+    iconDesktop: `cs-pattern-${(i % patternsCount) + 1}`,
+    iconMobile: `cs-pattern-mobile-${(i % patternsCount) + 1}`,
+    isRight: i % 2 === 0,
+  }));
+---
+
+<div class="relative pt-4 pb-8 px-3 md:pt-8 md:pb-14 lap:pt-12 lap:pb-20 xl:pt-14 xl:pb-22 lg:pt-16 lg:px-0 lg:pb-24">
+  <h2 class="uppercase  ml-16 text-subtitle mb-4 md:mb-6 xl:mb-10 md:text-[28px] lap:text-[36px] xl:text-[48px] lg:text-subtitle-lg lg:mb-20">
+    {t('mainPage.specializing')}
+  </h2>
+  <div class="relative flex flex-col gap-3 md:gap-6 lap:gap-7 xl:gap-8 lg:gap-10 select-none">
+    {links.map((link, i) => <AreasLink {...link} num={i + 1} />)}
+  </div>
+</div>

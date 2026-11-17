@@ -1,0 +1,19 @@
+---
+import NewsPageTemplate from '@comp/NewsPageTemplate.astro';
+import { getLocale } from '@utils/i18n/get-locale';
+import { sortNewsByDate } from '@utils/i18n/sortNews';
+
+const locale = getLocale(Astro.url);
+export async function getStaticPaths({ paginate }) {
+  let newsPages = await Astro.glob('./*.mdx');
+
+  // Sort by createdAt by descending
+  newsPages = sortNewsByDate(newsPages);
+
+  return paginate(newsPages, { pageSize: 4 });
+}
+
+const { page } = Astro.props;
+---
+
+<NewsPageTemplate page={page} baseUrl={`/news/${locale}`} />

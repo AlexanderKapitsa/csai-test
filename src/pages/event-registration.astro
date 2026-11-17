@@ -1,0 +1,39 @@
+---
+import '../styles/main.scss';
+import Loader from '@comp/Shared/Loader.astro';
+
+const [
+  {
+    frontmatter: { targets, defaultUrl },
+  },
+] = await Astro.glob('./event-registration/index.mdx');
+---
+
+<html>
+  <head>
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <Loader show message="Redirecting..." />
+
+    <script define:vars={{ targets, defaultUrl }}>
+      const params = new URLSearchParams(window.location.search);
+      const target = params.get('target');
+      const redirectUrl = targets[target] || defaultUrl;
+      console.log(targets, defaultUrl, target, redirectUrl);
+      setTimeout(() => {
+        window.location.replace(redirectUrl);
+      }, 100);
+    </script>
+
+    <noscript>
+      <p
+        style="color:var(--astro-body-color, #111);text-align:center;margin-top:2rem"
+      >
+        JavaScript is required to auto-redirect. Please <a href="/"
+          >click here</a
+        >.
+      </p>
+    </noscript>
+  </body>
+</html>

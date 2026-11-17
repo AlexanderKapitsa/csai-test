@@ -1,0 +1,7 @@
+---
+const { id, className } = Astro.props;
+---
+
+<div id={id} class=`lg:my-12 md:my-8 lap:my-10 xl:my-11 my-8 ${className?className:''}`>
+  <slot />
+</div>

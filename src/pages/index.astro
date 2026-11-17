@@ -1,0 +1,47 @@
+---
+import Areas from '@comp/Areas.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+import ResInst from '@comp/ResInst.astro';
+import Speech from '@comp/Speech.astro';
+import EventList from '@comp/EventList.astro';
+import PreFooter from '@comp/Prefooter/PreFooter.astro';
+import AreasLines from '@comp/AreasLines.astro';
+import 'module-alias/register';
+import { init } from '@utils/i18n/get-locale.js';
+
+const { t } = init(Astro.url);
+---
+
+<MainLayout pageTitle=`${t("titles.mainPage")}`>
+  <div class="flex flex-col gap-8" data-pagefind-body>
+    <ResInst />
+    <Speech />
+    <!-- Filler -->
+    <div id="deparments" class="relative">
+      <AreasLines />
+      <Areas />
+    </div>
+    <EventList />
+    <PreFooter />
+  </div>
+</MainLayout>
+
+<!-- Scroll to the block with a click of the button -->
+<script>
+  (() => {
+    const departmentsEl = document.getElementById('deparments');
+
+    const actionButtonEl = document.getElementById('action-button');
+
+    if (!departmentsEl || !actionButtonEl) {
+      return;
+    }
+
+    const handleScrollToRef = () =>
+      departmentsEl.scrollIntoView({
+        behavior: 'smooth',
+      });
+
+    actionButtonEl.addEventListener('click', handleScrollToRef);
+  })();
+</script>

@@ -1,0 +1,47 @@
+---
+import { init } from '@utils/i18n/get-locale';
+import Subtitle from './Subtitle.astro';
+import AchievementCard from './AchievementCard';
+
+interface Props {
+  goals: { description: string }[];
+}
+
+const { t } = init(Astro.url);
+const { goals } = Astro.props;
+const dotBaseStyle =
+  'absolute top-1/2 size-2 md:size-3 rounded-full bg-white dark:bg-primary-dark';
+---
+
+{
+  goals && goals.length > 0 && (
+    <div class="mt-14 lap:mt-[64px] xl:mt-[72px]  lg:mt-20 relative pb-16">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-full bg-accent-700-light dark:bg-accent-700-dark -z-10" />
+
+      <Subtitle
+        text={`${t('departments.goals')}`}
+        className="text-white dark:text-primary-dark"
+      />
+
+      <div class="relative h-0.5 bg-white dark:bg-accent-300-dark w-full mt-2 lap:mt-3 xl:mt-4 mb-8 lap:mb-10 xl:mb-12 lg:mb-14">
+        <div class={`left-0 -translate-y-1/2 ${dotBaseStyle}`} />
+        <div class={`left-1/4 top-1/2 -translate-y-1/2 ${dotBaseStyle}`} />
+        <div
+          class={`left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ${dotBaseStyle}`}
+        />
+        <div class={`left-3/4 top-1/2 -translate-y-1/2 ${dotBaseStyle}`} />
+        <div class={`right-0 top-1/2 -translate-y-1/2 ${dotBaseStyle}`} />
+      </div>
+
+      <div class="grid lap:grid-cols-6 gap-4 rounded-lg">
+        {goals.map(({ description }, index) => (
+          <AchievementCard
+            description={description}
+            className={index < 3 ? 'lap:col-span-2' : 'lap:col-span-3'}
+            client:only
+          />
+        ))}
+      </div>
+    </div>
+  )
+}

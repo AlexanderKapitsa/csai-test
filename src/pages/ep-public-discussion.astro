@@ -1,0 +1,116 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import BasicPageHeader from '@comp/Shared/BasicPageHeader.astro';
+import BasicMobilePageHeader from '@comp/Shared/BasicMobilePageHeader.astro';
+import CentralPanel from '@comp/Shared/CentralPanel.astro';
+import LeftPanel from '@comp/Shared/LeftPanel.astro';
+import BasicLongTextParagraph from '@comp/Shared/BasicLongTextParagraph.astro';
+import Picture from 'astro/components/Picture.astro';
+import { init } from '@utils/i18n/get-locale.js';
+import SmallSectionHeader from '@comp/Shared/SmallSectionHeader.astro';
+import QuestionarieParagraph from '@comp/PublicDiscussion/QuestionarieParagraph.astro';
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/*.{jpeg,jpg,png,gif}'
+);
+
+const { t } = init(Astro.url);
+---
+
+<MainLayout pageTitle={t('publicDiscussionOfPrograms.pageTitle')}>
+  <CentralPanel className="md:flex md:justify-between">
+    <LeftPanel className="!w-[100%]">
+      <div data-pagefind-body>
+        <BasicPageHeader title={t('publicDiscussionOfPrograms.pageHeader')} />
+        <BasicMobilePageHeader
+          title={t('publicDiscussionOfPrograms.pagepageHeaderTitle')}
+        />
+        <BasicLongTextParagraph
+          text={t('publicDiscussionOfPrograms.publicDiscussionParagraph1')}
+        />
+        <BasicLongTextParagraph
+          >{t('publicDiscussionOfPrograms.publicDiscussionParagraph2')}<a
+            href="https://surl.li/edxhjz"
+            class="underline"
+            target="_blank">https://surl.li/edxhjz</a
+          ></BasicLongTextParagraph
+        >
+        <BasicLongTextParagraph
+          >{t('publicDiscussionOfPrograms.publicDiscussionParagraph3')}<a
+            href="mailto:csai@karazin.ua"
+            class="underline">csai@karazin.ua</a
+          ></BasicLongTextParagraph
+        >
+      </div>
+    </LeftPanel>
+    <div
+      class="md:w-[40%] lap:w-[45%] xl:w-[40%] lg:w-[45%] prose-img:rounded-md prose-img:border-2 prose-img:border-secondary-400-dark dark:prose-img:border-primary-dark md:mt-0 mt-4"
+    >
+      <Picture
+        src={images['../assets/gromadske_obgovorennya.png']()}
+        alt="Громадське обговорення проєктів освітніх програм"
+        formats={['avif', 'webp']}
+        style=`aspect-ratio: 1`
+        quality="high"
+        width={250 * 1.5}
+        height={250 * 1.5}
+        densities={[1, 1.5, 2, 3]}
+        class="object-cover object-center md:w-[100%]"
+      />
+    </div>
+  </CentralPanel>
+  <CentralPanel>
+    <QuestionarieParagraph
+      title={t('publicDiscussionOfPrograms.questionnaireForStakeholders')}
+      description={t(
+        'publicDiscussionOfPrograms.questionnaireForStakeholdersDescription'
+      )}
+      link="https://forms.gle/J1RfjUHqgSnCw9GF9"
+      linkLabel={t('publicDiscussionOfPrograms.goToQuestionnaire')}
+    />
+    <QuestionarieParagraph
+      title={t('publicDiscussionOfPrograms.questionnaireForGraduates')}
+      description={t(
+        'publicDiscussionOfPrograms.questionnaireForGraduatesDescription'
+      )}
+      link="https://forms.gle/AXFAvfRDJappE9B58"
+      linkLabel={t('publicDiscussionOfPrograms.goToQuestionnaire')}
+    />
+    <QuestionarieParagraph
+      title={t('publicDiscussionOfPrograms.questionnaireForStudents')}
+      description={t(
+        'publicDiscussionOfPrograms.questionnaireForStudentsDescription'
+      )}
+      link="https://forms.gle/6DhFkPMJnmY4CZSj9"
+      linkLabel={t('publicDiscussionOfPrograms.goToQuestionnaire')}
+    />
+    <QuestionarieParagraph
+      title={t('publicDiscussionOfPrograms.questionnaireForPhDStudents')}
+      description={t(
+        'publicDiscussionOfPrograms.questionnaireForPhDStudentsDescription'
+      )}
+      link="https://forms.gle/wNoKhZDwcoxNBTM98"
+      linkLabel={t('publicDiscussionOfPrograms.goToQuestionnaire')}
+    />
+    <QuestionarieParagraph
+      title={t(
+        'publicDiscussionOfPrograms.questionnaireForEmployersAboutQuality'
+      )}
+      description={t(
+        'publicDiscussionOfPrograms.questionnaireForEmployersAboutQualityDescription'
+      )}
+      link="https://docs.google.com/forms/d/e/1FAIpQLSdy4InXGPVO-_E6D-oZ_q7c5ZG_tV3g7HrVR8Km5TYj_EutEw/viewform?usp=sharing"
+      linkLabel={t('publicDiscussionOfPrograms.goToQuestionnaire')}
+    />
+    <QuestionarieParagraph
+      title={t(
+        'publicDiscussionOfPrograms.questionnaireForStudentsAboutQuality'
+      )}
+      description={t(
+        'publicDiscussionOfPrograms.questionnaireForStudentsAboutQualityDescription'
+      )}
+      link="https://docs.google.com/forms/d/e/1FAIpQLScH15fqBRdeYFTGje0Hph4J7oK-69NjNz-bByFPgbjdc7BafA/viewform?usp=sharing"
+      linkLabel={t('publicDiscussionOfPrograms.goToQuestionnaire')}
+    />
+  </CentralPanel>
+</MainLayout>
