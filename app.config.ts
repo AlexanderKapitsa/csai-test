@@ -16,4 +16,9 @@ const appSettings = {
     isProductionBuild: process.env.BUILD_MODE === 'production'
 }
 
-export { tinaSettings, appSettings };
+const pictureSettings = {
+    densities: process.env.PICTURE_DENSITIES ? process.env.PICTURE_DENSITIES.split(',').map(Number) : [1, 1.5, 2, 3],
+    formats: process.env.PICTURE_FORMATS ? process.env.PICTURE_FORMATS.split(',') : ['avif', 'webp']
+};
+
+export { tinaSettings, appSettings, pictureSettings };

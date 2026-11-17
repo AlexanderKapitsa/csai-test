@@ -1,6 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
-
+import { pictureSettings } from '../../app.config';
 const { picture } = Astro.props;
 
 const actualSrc = picture.replaceAll('../../', '../');
@@ -15,11 +15,11 @@ if (!images[actualSrc]) throw new Error(`"${actualSrc}" does not exist in glob: 
   <Picture
     src={images[actualSrc]()}
     alt=""
-    formats={['avif', 'webp']}
+    formats={pictureSettings.formats}
     quality="high"
     width={350 * 1.5}
     height={450 * 1.5}
-    densities={[1, 1.5, 2, 3]}
+    densities={pictureSettings.densities}
     class="object-center object-cover z-[3] absolute md:w-[130px] md:h-[170px] md:top-[110px] md:left-[550px] md:rounded-[16px] lap:w-[200px] lap:h-[260px] lap:top-[140px] lap:left-[720px] lap:rounded-[24px] xl:w-[290px] xl:h-[360px] xl:top-[180px] xl:left-[840px] xl:rounded-[32px] lg:left-[930px] lg:top-[190px] lg:w-[350px] lg:h-[450px] lg:rounded-[40px] w-[90px] h-[115px] top-[120px] left-[240px] rounded-[10px]"
   />
   <!-- blueTop -->

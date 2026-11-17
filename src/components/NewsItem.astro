@@ -5,6 +5,7 @@ import Image from '../assets/rabbit.png';
 import DateFormatter from '../utils/date-formatter.js';
 import getOnlyBodyTextFromMarkdownContent from '../utils/strip-markdown.js';
 import * as fs from 'node:fs/promises';
+import { pictureSettings } from '../../app.config';
 
 const AMOUNT_OF_LINES_DESCRIPTION = 3;
 const MAX_LENGTH_OF_VISIBLE_DESCRIPTION_IN_SYMBOLS = 500;
@@ -84,11 +85,11 @@ function remainLinesOfAmount(str, amount) {
       class="news_image dark:border-primary-dark border-secondary-400-dark size-24 md:size-32 lap:size-40 lg:size-48 shrink-0 rounded-xl overflow-hidden">
       {src &&
         <Picture src={images[actualSrc]()} alt={alt}
-                formats={['avif', 'webp']}
+                formats={pictureSettings.formats}
                 style="aspect-ratio: 1"
                 quality="high"
                 width={375} height={375}
-                densities={[1, 1.5, 2, 3]}
+                densities={pictureSettings.densities}
                 class="object-cover object-center"
         />}
       {!src &&

@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import { ConstrainedWidthResolver } from '@utils/dimension-constrainer';
 import ImageDimensionsGetter from '@utils/image-dimensions-getter.js';
+import { pictureSettings } from '../../../app.config';
 
 const { src, alt } = Astro.props;
 const [originalWidth, originalHeight] = await ImageDimensionsGetter.from(src);
@@ -70,9 +71,9 @@ const image = images[src]?.();
         src={image}
         alt={alt}
         class={classes}
-        formats={['avif', 'webp']}
+        formats={pictureSettings.formats}
         quality="high"
-        densities={[1, 1.5, 2, 3]}
+        densities={pictureSettings.densities}
       />
     )
   }

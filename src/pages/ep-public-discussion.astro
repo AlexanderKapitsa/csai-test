@@ -9,6 +9,7 @@ import Picture from 'astro/components/Picture.astro';
 import { init } from '@utils/i18n/get-locale.js';
 import SmallSectionHeader from '@comp/Shared/SmallSectionHeader.astro';
 import QuestionarieParagraph from '@comp/PublicDiscussion/QuestionarieParagraph.astro';
+import { pictureSettings } from '../../app.config';
 
 const images = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/*.{jpeg,jpg,png,gif}'
@@ -49,12 +50,12 @@ const { t } = init(Astro.url);
       <Picture
         src={images['../assets/gromadske_obgovorennya.png']()}
         alt="Громадське обговорення проєктів освітніх програм"
-        formats={['avif', 'webp']}
+        formats={pictureSettings.formats}
         style=`aspect-ratio: 1`
         quality="high"
         width={250 * 1.5}
         height={250 * 1.5}
-        densities={[1, 1.5, 2, 3]}
+        densities={pictureSettings.densities}
         class="object-cover object-center md:w-[100%]"
       />
     </div>
